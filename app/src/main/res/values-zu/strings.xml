@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Thola. Sekela. Thenga okwaseNingizimu Afrika.</string>
+
+    <string name="tab_home">Ikhaya</string>
+    <string name="tab_wishlist">Uhlu lwezifiso</string>
+    <string name="tab_cart">Ikalishi</string>
+    <string name="tab_profile">Iphrofayela</string>
+
+    <string name="login">Ngena</string>
+    <string name="register">Dala i-akhawunti</string>
+    <string name="email">I-imeyili</string>
+    <string name="password">Iphasiwedi</string>
+    <string name="confirm_password">Qinisekisa iphasiwedi</string>
+    <string name="full_name">Igama eliphelele</string>
+    <string name="login_welcome">Siyakwamukela futhi</string>
+    <string name="login_subtitle">Ngena ukuze uqhubeke uthenga endaweni</string>
+    <string name="register_title">Joyina i-ShopLocal</string>
+    <string name="register_subtitle">Sekela abenzi baseNingizimu Afrika</string>
+    <string name="no_account">Umusha lapha? Dala i-akhawunti</string>
+    <string name="have_account">Usunayo i-akhawunti? Ngena</string>
+
+    <string name="search_hint">Sesha imikhiqizo yendawo</string>
+    <string name="no_products">Ayikho imikhiqizo ehambisana nosesho lwakho.</string>
+
+    <string name="add_to_cart">Faka ekalishini</string>
+    <string name="add_to_wishlist">Londoloza ohlwini lwezifiso</string>
+    <string name="added_to_cart">Kufakiwe ekalishini lakho</string>
+    <string name="added_to_wishlist">Kulondoloziwe ohlwini lwakho lwezifiso</string>
+    <string name="the_maker">Umenzi</string>
+    <string name="verified">Umkhandi oqinisekisiwe</string>
+    <string name="reviews_heading">Ukubuyekezwa komphakathi</string>
+    <string name="write_review">Bhala isibuyekezo</string>
+    <string name="submit">Thumela</string>
+
+    <string name="cart_title">Ikalishi lakho</string>
+    <string name="subtotal">Isamba esincane</string>
+    <string name="delivery">Ukulethwa</string>
+    <string name="total">Isamba</string>
+    <string name="free">MAHHALA</string>
+    <string name="checkout">Khokha</string>
+    <string name="place_order">Faka i-oda</string>
+    <string name="cart_empty">Ikalishi lakho lingenalutho. Bheka isitolo ukuze ufake izimpahla zendawo.</string>
+
+    <string name="local_points">Amaphuzu Endawo</string>
+    <string name="my_orders">Ama-oda ami</string>
+    <string name="logout">Phuma</string>
+    <string name="logout_confirm">Uqinisekile ukuthi ufuna ukuphuma?</string>
+
+    <string name="settings">Izilungiselelo</string>
+    <string name="profile_details">Imininingwane yephrofayela</string>
+    <string name="language">Ulimi</string>
+    <string name="appearance">Ukubukeka</string>
+    <string name="theme_light">Okukhanyayo</string>
+    <string name="theme_dark">Okumnyama</string>
+    <string name="theme_system">Okuzenzakalelayo kwesistimu</string>
+    <string name="notifications">Izaziso</string>
+    <string name="save">Londoloza izinguquko</string>
+    <string name="settings_saved">Izilungiselelo zilondoloziwe</string>
+
+    <string name="ok">KULUNGILE</string>
+    <string name="cancel">Khansela</string>
+</resources>

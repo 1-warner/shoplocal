@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme (light). DayNight lets Settings switch to dark. -->
+    <style name="Theme.ShopLocal" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/brand_green</item>
+        <item name="colorPrimaryDark">@color/brand_green_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/brand_orange</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorTertiary">@color/brand_gold</item>
+        <item name="android:statusBarColor">@color/brand_green</item>
+    </style>
+
+    <!-- Splash screen theme with the brand-green background. -->
+    <style name="Theme.ShopLocal.Splash">
+        <item name="android:windowBackground">@color/brand_green</item>
+        <item name="android:statusBarColor">@color/brand_green</item>
+    </style>
+</resources>

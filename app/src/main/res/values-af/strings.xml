@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Ontdek. Ondersteun. Koop Suid-Afrikaans.</string>
+
+    <string name="tab_home">Tuis</string>
+    <string name="tab_wishlist">Wenslys</string>
+    <string name="tab_cart">Mandjie</string>
+    <string name="tab_profile">Profiel</string>
+
+    <string name="login">Meld aan</string>
+    <string name="register">Skep rekening</string>
+    <string name="email">E-pos</string>
+    <string name="password">Wagwoord</string>
+    <string name="confirm_password">Bevestig wagwoord</string>
+    <string name="full_name">Volle naam</string>
+    <string name="login_welcome">Welkom terug</string>
+    <string name="login_subtitle">Meld aan om plaaslik te koop</string>
+    <string name="register_title">Sluit aan by ShopLocal</string>
+    <string name="register_subtitle">Ondersteun Suid-Afrikaanse makers</string>
+    <string name="no_account">Nuut hier? Skep \'n rekening</string>
+    <string name="have_account">Het reeds \'n rekening? Meld aan</string>
+
+    <string name="search_hint">Soek plaaslike produkte</string>
+    <string name="no_products">Geen produkte pas by jou soektog nie.</string>
+
+    <string name="add_to_cart">Voeg by mandjie</string>
+    <string name="add_to_wishlist">Stoor na wenslys</string>
+    <string name="added_to_cart">By jou mandjie gevoeg</string>
+    <string name="added_to_wishlist">Na jou wenslys gestoor</string>
+    <string name="the_maker">Die maker</string>
+    <string name="verified">Geverifieerde vervaardiger</string>
+    <string name="reviews_heading">Gemeenskapsresensies</string>
+    <string name="write_review">Skryf \'n resensie</string>
+    <string name="submit">Dien in</string>
+
+    <string name="cart_title">Jou mandjie</string>
+    <string name="subtotal">Subtotaal</string>
+    <string name="delivery">Aflewering</string>
+    <string name="total">Totaal</string>
+    <string name="free">GRATIS</string>
+    <string name="checkout">Betaal</string>
+    <string name="place_order">Plaas bestelling</string>
+    <string name="cart_empty">Jou mandjie is leeg. Blaai deur die winkel om plaaslike goedere by te voeg.</string>
+
+    <string name="local_points">Plaaslike Punte</string>
+    <string name="my_orders">My bestellings</string>
+    <string name="logout">Meld af</string>
+    <string name="logout_confirm">Is jy seker jy wil afmeld?</string>
+
+    <string name="settings">Instellings</string>
+    <string name="profile_details">Profielbesonderhede</string>
+    <string name="language">Taal</string>
+    <string name="appearance">Voorkoms</string>
+    <string name="theme_light">Lig</string>
+    <string name="theme_dark">Donker</string>
+    <string name="theme_system">Stelselverstek</string>
+    <string name="notifications">Kennisgewings</string>
+    <string name="save">Stoor veranderinge</string>
+    <string name="settings_saved">Instellings gestoor</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Kanselleer</string>
+</resources>
