@@ -52,6 +52,7 @@ class HomeFragment : Fragment() {
         adapter = ProductAdapter { openProduct(it) }
         binding.productGrid.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.productGrid.adapter = adapter
+        binding.productGrid.isNestedScrollingEnabled = false
 
         recentAdapter = MiniProductAdapter { openProduct(it) }
         binding.recentList.layoutManager =

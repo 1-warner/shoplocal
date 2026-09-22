@@ -1,213 +1,244 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeRefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="?attr/colorSurface">
 
-    <!-- Brand header -->
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_header"
-        android:orientation="vertical"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="18dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tagline"
-            android:textColor="@color/brand_gold"
-            android:textSize="12sp" />
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
+            <!-- Brand header -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                app:boxBackgroundColor="@color/white"
-                app:startIconDrawable="@android:drawable/ic_menu_search"
-                android:hint="@string/search_hint">
+                android:background="@drawable/bg_header"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="18dp"
+                android:paddingBottom="18dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/searchInput"
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_logo"
+                    android:contentDescription="@string/app_name" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/app_name"
+                        android:textColor="@color/white"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tagline"
+                        android:textColor="@color/brand_gold"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Floating-style search card that overlaps the header bottom -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="-26dp"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="6dp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:maxLines="1" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="6dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnArtisanMap"
-            style="@style/Widget.Material3.Button.TonalButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:icon="@drawable/ic_map_pin"
-            app:iconTint="@null"
-            android:text="@string/view_artisan_map" />
-    </LinearLayout>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@android:drawable/ic_menu_search"
+                        app:tint="@color/grey_600"
+                        android:contentDescription="@string/search_hint" />
 
-    <!-- Category filter chips -->
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:paddingHorizontal="12dp"
-        android:paddingTop="8dp">
+                    <EditText
+                        android:id="@+id/searchInput"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/search_hint"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="14dp" />
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/categoryChips"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:singleLine="true"
-            app:singleSelection="true" />
-    </HorizontalScrollView>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnArtisanMap"
+                        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        app:icon="@drawable/ic_map_pin"
+                        app:iconTint="@null"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        android:contentDescription="@string/view_artisan_map" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-    <!-- Area filter (In your area) -->
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/areaChips"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="12dp"
-        android:paddingTop="4dp"
-        app:singleLine="true"
-        app:selectionRequired="true"
-        app:singleSelection="true">
+            <!-- Category chips -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:paddingHorizontal="12dp"
+                android:paddingTop="12dp">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipAreaAll"
-            style="@style/Widget.Material3.Chip.Filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/area_all" />
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/categoryChips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleLine="true"
+                    app:singleSelection="true" />
+            </HorizontalScrollView>
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipAreaNear"
-            style="@style/Widget.Material3.Chip.Filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/area_near" />
+            <!-- Area filter (In your area) -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/areaChips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="12dp"
+                android:paddingTop="2dp"
+                app:singleLine="true"
+                app:selectionRequired="true"
+                app:singleSelection="true">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipAreaElse"
-            style="@style/Widget.Material3.Chip.Filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/area_else" />
-    </com.google.android.material.chip.ChipGroup>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAreaAll"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/area_all" />
 
-    <!-- Sort + deals controls -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="4dp">
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAreaNear"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/area_near" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSort"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="0dp"
-            android:text="@string/sort"
-            app:icon="@android:drawable/ic_menu_sort_by_size" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAreaElse"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/area_else" />
+            </com.google.android.material.chip.ChipGroup>
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipDeals"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/deals_only"
-            app:chipIcon="@android:drawable/ic_menu_compass"
-            android:checkable="true" />
+            <!-- Sort + deals controls -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="2dp">
 
-        <TextView
-            android:id="@+id/resultCount"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:textColor="@color/grey_600"
-            android:textSize="12sp" />
-    </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSort"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="0dp"
+                    android:text="@string/sort"
+                    app:icon="@android:drawable/ic_menu_sort_by_size" />
 
-    <!-- Recently viewed strip (hidden until there is history) -->
-    <LinearLayout
-        android:id="@+id/recentSection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingHorizontal="12dp"
-        android:visibility="gone">
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipDeals"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/deals_only"
+                    android:checkable="true" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/recently_viewed"
-            android:textStyle="bold"
-            android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/resultCount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textColor="@color/grey_600"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recentList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:clipToPadding="false" />
-    </LinearLayout>
+            <!-- Recently viewed strip -->
+            <LinearLayout
+                android:id="@+id/recentSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="12dp"
+                android:visibility="gone">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefresh"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recently_viewed"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recentList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false" />
+            </LinearLayout>
 
+            <!-- Product grid — scrolls with the whole page -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/productGrid"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
                 android:padding="8dp" />
 
             <TextView
                 android:id="@+id/emptyState"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="32dp"
                 android:gravity="center"
+                android:padding="32dp"
                 android:text="@string/no_products"
                 android:textColor="@color/grey_600"
                 android:visibility="gone" />
-        </FrameLayout>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-</LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
