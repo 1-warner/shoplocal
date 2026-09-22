@@ -5,9 +5,54 @@
 
     <!-- Bottom navigation -->
     <string name="tab_home">Home</string>
+    <string name="tab_market">Market</string>
     <string name="tab_wishlist">Wishlist</string>
     <string name="tab_cart">Cart</string>
     <string name="tab_profile">Profile</string>
+
+    <!-- Home controls -->
+    <string name="sort">Sort</string>
+    <string name="sort_newest">Newest</string>
+    <string name="sort_price_low">Price: low to high</string>
+    <string name="sort_price_high">Price: high to low</string>
+    <string name="sort_rating">Top rated</string>
+    <string name="deals_only">Deals</string>
+    <string name="recently_viewed">Recently viewed</string>
+
+    <!-- Marketplace -->
+    <string name="marketplace_title">Marketplace</string>
+    <string name="marketplace_subtitle">Buy and sell with other locals</string>
+    <string name="marketplace_empty">No listings yet. Be the first to sell something!</string>
+    <string name="sell_item">Sell an item</string>
+    <string name="sell_intro">List something to sell to other ShopLocal members. Buyers will contact you directly.</string>
+    <string name="sell_title">What are you selling?</string>
+    <string name="sell_description">Description</string>
+    <string name="sell_category">Category</string>
+    <string name="sell_price">Price</string>
+    <string name="sell_location">Where is it?</string>
+    <string name="sell_image">Image URL (optional)</string>
+    <string name="sell_image_helper">Paste a link to a photo of your item.</string>
+    <string name="post_listing">Post listing</string>
+    <string name="listing_posted">Your item is now listed!</string>
+    <string name="sell_error_title">Please give your item a title (3+ characters).</string>
+    <string name="sell_error_price">Please enter a valid price.</string>
+    <string name="sell_error_city">Please choose a location.</string>
+    <string name="pickup_location">Pick-up location</string>
+    <string name="listing_meta">%1$s · listed by %2$s</string>
+    <string name="contact_seller">Contact seller</string>
+    <string name="contact_share_text">Hi! I\'m interested in your \"%1$s\" (%2$s) in %3$s listed on ShopLocal by %4$s. Is it still available?</string>
+    <string name="delete_listing">Delete listing</string>
+    <string name="delete_listing_confirm">Remove this listing from the marketplace?</string>
+
+    <!-- Subscription (ShopLocal MORE) -->
+    <string name="subscription">ShopLocal MORE</string>
+    <string name="subscription_desc">Free delivery on every order</string>
+    <string name="subscription_active">You\'re a ShopLocal MORE member — free delivery!</string>
+
+    <!-- Orders -->
+    <string name="cancel_order">Cancel order</string>
+    <string name="cancel_order_confirm">Cancel this order?</string>
+    <string name="share_product">Share</string>
 
     <!-- Auth -->
     <string name="login">Log in</string>
@@ -44,6 +89,8 @@
     <string name="verified">Verified artisan</string>
     <string name="origin_label">Made in %1$s</string>
     <string name="reviews_heading">Community reviews</string>
+    <string name="where_made">Where it\'s made</string>
+    <string name="share_product_text">Check out \"%1$s\" (%2$s) by %3$s on ShopLocal — supporting local South African makers!</string>
     <string name="write_review">Write a review</string>
     <string name="write_a_review">Write a review</string>
     <string name="submit">Submit</string>

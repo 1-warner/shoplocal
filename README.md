@@ -40,7 +40,16 @@ out — awarding loyalty points server-side.
 | **Community reviews** *(user-defined 2)* | Read and post star reviews; product ratings recompute via a DB trigger | *User Defined 2* |
 | **Wishlist** *(user-defined 3)* | Save items for later, synced to your account | *User Defined 3* |
 | **Artisan map** | An OpenStreetMap (osmdroid) map with a pin for each seller's home town; tap a pin to meet the maker and browse their products | Extra user-defined feature |
-| **Extras** | Category filter + search, offline catalogue cache, artisan storytelling, pull-to-refresh | Polish |
+| **Member marketplace** | Facebook-Marketplace-style flow: any member can **list an item to sell**; listings show on a map with an embedded location and a "contact seller" share | Extra user-defined feature |
+| **Sort, filter & deals** | Sort by price/rating/newest, filter by category, and a **Deals** toggle (Superbalist/Bash/Takealot-style) | Polish |
+| **ShopLocal MORE** | TakealotMORE-style subscription giving **free delivery** on every order | Polish |
+| **Recently viewed** | A Shein/Takealot-style strip of the products you last opened | Polish |
+| **Share** | Share any product or listing via the Android share sheet | Polish |
+| **Extras** | Offline catalogue cache, artisan storytelling, pull-to-refresh, 34-item catalogue across 12 artisans | Polish |
+
+> **See [REFERENCES.md](REFERENCES.md)** for a full, Harvard-style reference list:
+> which competitor app each feature came from, every library/SDK and its licence,
+> and the source of all product imagery.
 
 ---
 
@@ -183,7 +192,22 @@ and the data as it lands in the hosted database.
 
 ---
 
-## 10. Tech summary
+## 10. References
+
+A complete, Harvard-style reference list is in **[REFERENCES.md](REFERENCES.md)**, covering:
+
+1. **Feature inspiration** — each borrowed feature mapped to the competitor app it
+   came from (Takealot, Superbalist, Bash, Facebook Marketplace, Shein), with the
+   same citations used in the Part 1 research.
+2. **Libraries & SDKs** — Kotlin, AndroidX, Material, OkHttp, Coil, osmdroid, JUnit,
+   each with its licence and source.
+3. **Backend & tooling** — Supabase, OpenStreetMap, and the module-supplied GitHub
+   Actions guides the CI workflow was adapted from.
+4. **Icons** — custom vectors based on Material Symbols.
+5. **Imagery** — all product photos are royalty-free Unsplash images (licence linked).
+6. **Data** — SA town coordinates from OpenStreetMap/Nominatim.
+
+## 11. Tech summary
 
 | | |
 |---|---|

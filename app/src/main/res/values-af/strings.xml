@@ -3,9 +3,18 @@
     <string name="tagline">Ontdek. Ondersteun. Koop Suid-Afrikaans.</string>
 
     <string name="tab_home">Tuis</string>
+    <string name="tab_market">Mark</string>
     <string name="tab_wishlist">Wenslys</string>
     <string name="tab_cart">Mandjie</string>
     <string name="tab_profile">Profiel</string>
+
+    <string name="marketplace_title">Mark</string>
+    <string name="marketplace_subtitle">Koop en verkoop met ander plaaslikes</string>
+    <string name="sell_item">Verkoop \'n item</string>
+    <string name="post_listing">Plaas lys</string>
+    <string name="contact_seller">Kontak verkoper</string>
+    <string name="subscription">ShopLocal MORE</string>
+    <string name="subscription_desc">Gratis aflewering op elke bestelling</string>
 
     <string name="login">Meld aan</string>
     <string name="register">Skep rekening</string>

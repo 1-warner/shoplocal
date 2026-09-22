@@ -60,6 +60,15 @@ class PricingTest {
     }
 
     @Test
+    fun delivery_isFreeForSubscribersBelowThreshold() {
+        // A ShopLocal MORE member gets free delivery even on a small basket.
+        assertEquals(0.0, Pricing.deliveryFee(200.0, isSubscriber = true), 0.001)
+        assertEquals(200.0, Pricing.total(200.0, isSubscriber = true), 0.001)
+        // Non-subscriber still pays on the same basket.
+        assertEquals(Pricing.STANDARD_DELIVERY_FEE, Pricing.deliveryFee(200.0, isSubscriber = false), 0.001)
+    }
+
+    @Test
     fun loyaltyPoints_isOnePerTenRandOfSubtotal() {
         assertEquals(25, Pricing.loyaltyPoints(250.0))
         assertEquals(25, Pricing.loyaltyPoints(259.99)) // rounds down
