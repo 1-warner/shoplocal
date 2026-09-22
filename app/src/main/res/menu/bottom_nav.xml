@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/nav_home"     android:icon="@drawable/ic_home"   android:title="@string/tab_home" />
+    <item android:id="@+id/nav_market"   android:icon="@drawable/ic_store"  android:title="@string/tab_market" />
     <item android:id="@+id/nav_wishlist" android:icon="@drawable/ic_heart"  android:title="@string/tab_wishlist" />
     <item android:id="@+id/nav_cart"     android:icon="@drawable/ic_cart"   android:title="@string/tab_cart" />
     <item android:id="@+id/nav_profile"  android:icon="@drawable/ic_person" android:title="@string/tab_profile" />

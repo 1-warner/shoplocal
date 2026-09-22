@@ -6,6 +6,7 @@ import com.noor.shoplocal.R
 import com.noor.shoplocal.databinding.ActivityMainBinding
 import com.noor.shoplocal.ui.cart.CartFragment
 import com.noor.shoplocal.ui.home.HomeFragment
+import com.noor.shoplocal.ui.market.MarketplaceFragment
 import com.noor.shoplocal.ui.profile.ProfileFragment
 import com.noor.shoplocal.ui.wishlist.WishlistFragment
 
@@ -25,6 +26,7 @@ class MainActivity : BaseActivity() {
         binding.bottomNav.setOnItemSelectedListener { item ->
             val fragment: Fragment = when (item.itemId) {
                 R.id.nav_home -> HomeFragment()
+                R.id.nav_market -> MarketplaceFragment()
                 R.id.nav_wishlist -> WishlistFragment()
                 R.id.nav_cart -> CartFragment()
                 R.id.nav_profile -> ProfileFragment()

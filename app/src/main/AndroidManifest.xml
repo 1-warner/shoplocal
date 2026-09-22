@@ -30,6 +30,8 @@
         <activity android:name=".ui.MainActivity" android:exported="false" />
         <activity android:name=".ui.product.ProductDetailActivity" android:exported="false" />
         <activity android:name=".ui.map.ArtisanMapActivity" android:exported="false" />
+        <activity android:name=".ui.market.SellActivity" android:exported="false" />
+        <activity android:name=".ui.market.ListingDetailActivity" android:exported="false" />
         <activity android:name=".ui.orders.OrdersActivity" android:exported="false" />
         <activity
             android:name=".ui.settings.SettingsActivity"
