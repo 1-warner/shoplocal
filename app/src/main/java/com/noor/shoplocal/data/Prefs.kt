@@ -17,6 +17,8 @@ object Prefs {
     const val KEY_NOTIFY_PUSH = "notify_push"
     const val KEY_NOTIFY_EMAIL = "notify_email"
     private const val KEY_CATALOGUE_CACHE = "catalogue_cache"
+    private const val KEY_RECENT = "recently_viewed"
+    private const val MAX_RECENT = 10
 
     private fun prefs(ctx: Context) = ctx.getSharedPreferences(FILE, Context.MODE_PRIVATE)
 
@@ -38,4 +40,18 @@ object Prefs {
 
     fun cachedCatalogue(ctx: Context): String? =
         prefs(ctx).getString(KEY_CATALOGUE_CACHE, null)
+
+    // ---- Recently viewed (Shein/Takealot-style) -----------------------------
+    /** Record a product id as most-recently viewed (de-duplicated, capped). */
+    fun addRecentlyViewed(ctx: Context, productId: String) {
+        val current = recentlyViewed(ctx).toMutableList()
+        current.remove(productId)
+        current.add(0, productId)
+        val trimmed = current.take(MAX_RECENT)
+        prefs(ctx).edit().putString(KEY_RECENT, trimmed.joinToString(",")).apply()
+    }
+
+    /** Product ids most-recently viewed, newest first. */
+    fun recentlyViewed(ctx: Context): List<String> =
+        prefs(ctx).getString(KEY_RECENT, "")?.split(",")?.filter { it.isNotBlank() } ?: emptyList()
 }

@@ -22,8 +22,13 @@ data class Product(
     val sellerStory: String?,
     val ratingAvg: Double,
     val ratingCount: Int,
-    val origin: String
+    val origin: String,
+    val sellerLat: Double? = null,
+    val sellerLng: Double? = null
 ) : Parcelable {
+
+    /** True when we have coordinates to plot the seller on the embedded map. */
+    val hasLocation: Boolean get() = sellerLat != null && sellerLng != null
 
     /** Price the customer actually pays — the promotion price when one is set. */
     val effectivePrice: Double get() = discountPrice ?: price
@@ -56,6 +61,30 @@ data class Review(
     val createdAt: String
 )
 
+/**
+ * A Facebook-Marketplace-style user listing: an item put up for sale by a
+ * ShopLocal member (as opposed to a curated artisan product). Parcelable so it
+ * can be passed to the listing-detail screen.
+ */
+@Parcelize
+data class Listing(
+    val id: String,
+    val sellerUserId: String,
+    val sellerName: String,
+    val title: String,
+    val description: String,
+    val category: String,
+    val price: Double,
+    val imageUrl: String?,
+    val location: String,
+    val lat: Double?,
+    val lng: Double?,
+    val status: String,
+    val createdAt: String
+) : Parcelable {
+    val hasLocation: Boolean get() = lat != null && lng != null
+}
+
 /** A verified local artisan/seller, with map coordinates for the artisan map. */
 data class Seller(
     val name: String,
@@ -74,5 +103,6 @@ data class Profile(
     val email: String,
     val loyaltyPoints: Int,
     val phone: String?,
-    val address: String?
+    val address: String?,
+    val isSubscriber: Boolean = false
 )

@@ -28,7 +28,7 @@ object ShopRepository {
 
     private const val TAG = "ShopRepository"
     private const val PRODUCT_SELECT =
-        "id,name,description,category,price,discount_price,image_url,stock,rating_avg,rating_count,origin,sellers(name,verified,story)"
+        "id,name,description,category,price,discount_price,image_url,stock,rating_avg,rating_count,origin,sellers(name,verified,story,lat,lng)"
 
     private val client = OkHttpClient.Builder()
         .connectTimeout(15, TimeUnit.SECONDS)
@@ -61,26 +61,58 @@ object ShopRepository {
      * Loads the product catalogue from the API. On network failure it falls back
      * to the last successfully-cached response so the app still works offline.
      */
-    suspend fun products(context: Context, category: String? = null, search: String? = null): List<Product> =
-        withContext(Dispatchers.IO) {
-            try {
-                var path = "products?select=$PRODUCT_SELECT&order=created_at.desc"
-                if (!category.isNullOrBlank() && category != "All") path += "&category=eq.$category"
-                if (!search.isNullOrBlank()) path += "&name=ilike.*${search.trim()}*"
+    /** Sort options for the catalogue (mirrors Superbalist/Bash-style sorting). */
+    enum class Sort(val order: String) {
+        NEWEST("created_at.desc"),
+        PRICE_LOW("price.asc"),
+        PRICE_HIGH("price.desc"),
+        RATING("rating_avg.desc")
+    }
 
-                val body = get(path).build().runForString()
+    suspend fun products(
+        context: Context,
+        category: String? = null,
+        search: String? = null,
+        sort: Sort = Sort.NEWEST,
+        onSaleOnly: Boolean = false
+    ): List<Product> =
+        withContext(Dispatchers.IO) {
+            // We always fetch the full catalogue (so it can be cached for offline use)
+            // and apply category/search/sale/sort locally — keeps one cache authoritative.
+            val all = try {
+                val body = get("products?select=$PRODUCT_SELECT&order=created_at.desc").build().runForString()
                 Prefs.cacheCatalogue(context, body)
                 Log.d(TAG, "Fetched ${JSONArray(body).length()} products from API")
                 parseProducts(body)
             } catch (e: Exception) {
                 Log.w(TAG, "products() network failed (${e.message}); using offline cache")
                 val cached = Prefs.cachedCatalogue(context) ?: throw e
-                parseProducts(cached).filter { p ->
-                    (category.isNullOrBlank() || category == "All" || p.category == category) &&
-                        (search.isNullOrBlank() || p.name.contains(search, ignoreCase = true))
-                }
+                parseProducts(cached)
             }
+            filterAndSort(all, category, search, sort, onSaleOnly)
         }
+
+    /** Pure client-side filtering + sorting, reused by both the network and cache paths. */
+    fun filterAndSort(
+        all: List<Product>,
+        category: String?,
+        search: String?,
+        sort: Sort,
+        onSaleOnly: Boolean
+    ): List<Product> {
+        val filtered = all.filter { p ->
+            (category.isNullOrBlank() || category == "All" || p.category == category) &&
+                (search.isNullOrBlank() || p.name.contains(search, ignoreCase = true) ||
+                    p.category.contains(search, ignoreCase = true)) &&
+                (!onSaleOnly || p.isOnSale)
+        }
+        return when (sort) {
+            Sort.PRICE_LOW -> filtered.sortedBy { it.effectivePrice }
+            Sort.PRICE_HIGH -> filtered.sortedByDescending { it.effectivePrice }
+            Sort.RATING -> filtered.sortedByDescending { it.ratingAvg }
+            Sort.NEWEST -> filtered
+        }
+    }
 
     /** Distinct category names for the filter chips, derived from the cached catalogue. */
     fun categoriesFrom(products: List<Product>): List<String> =
@@ -289,7 +321,7 @@ object ShopRepository {
     suspend fun profile(session: Session): Profile? = withContext(Dispatchers.IO) {
         runCatching {
             val body = authed(
-                "profiles?select=id,name,email,loyalty_points,phone,address&id=eq.${session.userId}",
+                "profiles?select=id,name,email,loyalty_points,phone,address,is_subscriber&id=eq.${session.userId}",
                 session.accessToken
             ).build().runForString()
             val arr = JSONArray(body)
@@ -301,7 +333,8 @@ object ShopRepository {
                 email = o.optString("email", session.email),
                 loyaltyPoints = o.optInt("loyalty_points", 0),
                 phone = o.optString("phone").ifBlank { null },
-                address = o.optString("address").ifBlank { null }
+                address = o.optString("address").ifBlank { null },
+                isSubscriber = o.optBoolean("is_subscriber", false)
             )
         }.getOrElse { Log.w(TAG, "profile() failed: ${it.message}"); null }
     }
@@ -335,6 +368,100 @@ object ShopRepository {
         }
     }
 
+    // ---- Marketplace (user listings) ----------------------------------------
+
+    private const val LISTING_SELECT =
+        "id,seller_user_id,seller_name,title,description,category,price,image_url,location,lat,lng,status,created_at"
+
+    /** All available marketplace listings, newest first. */
+    suspend fun listings(): List<Listing> = withContext(Dispatchers.IO) {
+        runCatching {
+            val body = get("marketplace_listings?select=$LISTING_SELECT&status=eq.available&order=created_at.desc")
+                .build().runForString()
+            parseListings(body)
+        }.getOrElse { Log.w(TAG, "listings() failed: ${it.message}"); emptyList() }
+    }
+
+    /** The signed-in user's own listings (available or sold). */
+    suspend fun myListings(session: Session): List<Listing> = withContext(Dispatchers.IO) {
+        runCatching {
+            val body = authed(
+                "marketplace_listings?select=$LISTING_SELECT&seller_user_id=eq.${session.userId}&order=created_at.desc",
+                session.accessToken
+            ).build().runForString()
+            parseListings(body)
+        }.getOrElse { Log.w(TAG, "myListings() failed: ${it.message}"); emptyList() }
+    }
+
+    /** Create a marketplace listing (the "sell your own item" flow). */
+    suspend fun createListing(
+        session: Session,
+        title: String,
+        description: String,
+        category: String,
+        price: Double,
+        imageUrl: String?,
+        location: String,
+        lat: Double?,
+        lng: Double?
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        runCatching {
+            val payload = JSONObject()
+                .put("seller_user_id", session.userId)
+                .put("seller_name", session.name.ifBlank { session.email.substringBefore("@") })
+                .put("title", title)
+                .put("description", description)
+                .put("category", category)
+                .put("price", price)
+                .put("image_url", imageUrl ?: JSONObject.NULL)
+                .put("location", location)
+                .put("lat", lat ?: JSONObject.NULL)
+                .put("lng", lng ?: JSONObject.NULL)
+                .toString()
+            authed("marketplace_listings", session.accessToken)
+                .addHeader("Prefer", "return=minimal")
+                .post(payload.toRequestBody(JSON))
+                .build().runForString()
+            Log.i(TAG, "Listing created: $title")
+            Unit
+        }.onFailure { Log.w(TAG, "createListing failed: ${it.message}") }
+    }
+
+    suspend fun deleteListing(session: Session, id: String): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                authed("marketplace_listings?id=eq.$id", session.accessToken)
+                    .delete().build().runForString()
+                Unit
+            }
+        }
+
+    // ---- Subscription (ShopLocal MORE) & order status ------------------------
+
+    suspend fun setSubscriber(session: Session, subscribed: Boolean): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val payload = JSONObject().put("is_subscriber", subscribed).toString()
+                authed("profiles?id=eq.${session.userId}", session.accessToken)
+                    .addHeader("Prefer", "return=minimal")
+                    .patch(payload.toRequestBody(JSON))
+                    .build().runForString()
+                Unit
+            }
+        }
+
+    suspend fun cancelOrder(session: Session, orderId: String): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val payload = JSONObject().put("status", "cancelled").toString()
+                authed("orders?id=eq.$orderId", session.accessToken)
+                    .addHeader("Prefer", "return=minimal")
+                    .patch(payload.toRequestBody(JSON))
+                    .build().runForString()
+                Unit
+            }
+        }
+
     // ---- JSON parsing --------------------------------------------------------
 
     private fun parseProducts(body: String): List<Product> {
@@ -358,8 +485,32 @@ object ShopRepository {
             sellerStory = seller?.optString("story"),
             ratingAvg = o.optDouble("rating_avg", 0.0),
             ratingCount = o.optInt("rating_count", 0),
-            origin = o.optString("origin", "South Africa")
+            origin = o.optString("origin", "South Africa"),
+            sellerLat = seller?.takeIf { !it.isNull("lat") }?.optDouble("lat"),
+            sellerLng = seller?.takeIf { !it.isNull("lng") }?.optDouble("lng")
         )
+    }
+
+    private fun parseListings(body: String): List<Listing> {
+        val arr = JSONArray(body)
+        return (0 until arr.length()).map { i ->
+            val o = arr.getJSONObject(i)
+            Listing(
+                id = o.getString("id"),
+                sellerUserId = o.optString("seller_user_id", ""),
+                sellerName = o.optString("seller_name", "Member"),
+                title = o.optString("title", ""),
+                description = o.optString("description", ""),
+                category = o.optString("category", "General"),
+                price = o.optDouble("price", 0.0),
+                imageUrl = if (o.isNull("image_url")) null else o.optString("image_url"),
+                location = o.optString("location", ""),
+                lat = if (o.isNull("lat")) null else o.optDouble("lat"),
+                lng = if (o.isNull("lng")) null else o.optDouble("lng"),
+                status = o.optString("status", "available"),
+                createdAt = o.optString("created_at", "")
+            )
+        }
     }
 
     private fun parseOrder(o: JSONObject): Order = Order(

@@ -20,14 +20,19 @@ object Pricing {
     fun subtotal(lines: List<CartLine>): Double =
         lines.sumOf { it.product.effectivePrice * it.quantity }
 
-    /** Delivery is free above the threshold, otherwise a flat fee. Empty cart ships nothing. */
-    fun deliveryFee(subtotal: Double): Double = when {
+    /**
+     * Delivery is free above the threshold or for ShopLocal MORE subscribers
+     * (a TakealotMORE-style perk), otherwise a flat fee. Empty cart ships nothing.
+     */
+    fun deliveryFee(subtotal: Double, isSubscriber: Boolean = false): Double = when {
         subtotal <= 0.0 -> 0.0
+        isSubscriber -> 0.0
         subtotal >= FREE_DELIVERY_THRESHOLD -> 0.0
         else -> STANDARD_DELIVERY_FEE
     }
 
-    fun total(subtotal: Double): Double = subtotal + deliveryFee(subtotal)
+    fun total(subtotal: Double, isSubscriber: Boolean = false): Double =
+        subtotal + deliveryFee(subtotal, isSubscriber)
 
     /** Local Points earned on an order, based on the subtotal (not delivery). */
     fun loyaltyPoints(subtotal: Double): Int =
