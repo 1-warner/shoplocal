@@ -179,6 +179,18 @@ is caught before hitting the network. If the device is offline, Home falls back 
 the last cached catalogue. Logging (`android.util.Log`) traces auth and API calls
 for debugging.
 
+**Session handling:** access tokens expire after ~1 hour, so the app stores the
+refresh token and automatically renews the session — proactively at startup and
+again whenever an authenticated request returns `401` — then retries the request.
+This keeps the cart, wishlist and orders working long after login instead of
+silently failing.
+
+**Delivery location:** a member must set a delivery location before they can place
+an order. The cart shows a warning banner ("You haven't set your delivery location")
+until one is saved, and a confirmation banner ("Delivering to …") once it is; the
+address is stored on the user's profile and reused for future orders. The Cart tab
+also shows a live item-count badge.
+
 ---
 
 ## 9. Demonstration video

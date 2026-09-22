@@ -112,6 +112,13 @@
     <string name="place_order">Place order</string>
     <string name="cart_empty">Your cart is empty. Browse the shop to add local goods.</string>
     <string name="points_preview">You\'ll earn %1$d Local Points on this order</string>
+    <string name="location_missing">⚠ You haven\'t set your delivery location yet.</string>
+    <string name="set_location">Set location</string>
+    <string name="location_set_to">Delivering to: %1$s</string>
+    <string name="delivery_address_title">Delivery location</string>
+    <string name="delivery_address_required">Please enter a delivery address to continue.</string>
+    <string name="save_location">Save location</string>
+    <string name="need_location_to_order">Please set your delivery location before ordering.</string>
     <string name="order_placed">Order placed! 🎉</string>
     <string name="order_placed_body">Your order of %1$s is confirmed. You earned %2$d Local Points.</string>
     <string name="remove">Remove</string>

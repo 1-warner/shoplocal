@@ -21,8 +21,9 @@ import kotlinx.coroutines.launch
 
 /**
  * The basket. Lists cart lines, keeps the running subtotal / delivery / total in
- * sync with the shared [Pricing] rules, and checks out through the custom
- * `place_order` REST endpoint — which also awards Local Points.
+ * sync with the shared [Pricing] rules, requires a delivery location before
+ * ordering, and checks out through the custom `place_order` REST endpoint — which
+ * also awards Local Points.
  */
 class CartFragment : Fragment() {
 
@@ -31,6 +32,7 @@ class CartFragment : Fragment() {
     private lateinit var adapter: CartAdapter
     private var lines: List<CartLine> = emptyList()
     private var isSubscriber = false
+    private var deliveryAddress: String = ""   // the user's saved delivery location
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, s: Bundle?): View {
         _binding = FragmentCartBinding.inflate(inflater, container, false)
@@ -45,6 +47,8 @@ class CartFragment : Fragment() {
         binding.cartList.layoutManager = LinearLayoutManager(requireContext())
         binding.cartList.adapter = adapter
         binding.btnCheckout.setOnClickListener { promptCheckout() }
+        binding.locationBanner.setOnClickListener { showAddressDialog(afterSave = null) }
+        binding.locationSet.setOnClickListener { showAddressDialog(afterSave = null) }
         load()
     }
 
@@ -57,10 +61,24 @@ class CartFragment : Fragment() {
         val session = SupabaseAuth.currentSession(requireContext()) ?: return
         viewLifecycleOwner.lifecycleScope.launch {
             lines = ShopRepository.cart(session)
-            isSubscriber = ShopRepository.profile(session)?.isSubscriber ?: false
+            val profile = ShopRepository.profile(session)
+            isSubscriber = profile?.isSubscriber ?: false
+            deliveryAddress = profile?.address?.trim().orEmpty()
             if (_binding == null) return@launch
             adapter.submit(lines)
             renderTotals()
+            renderLocation()
+            (activity as? com.noor.shoplocal.ui.MainActivity)?.refreshCartBadge()
+        }
+    }
+
+    /** Shows the location warning or the "delivering to …" confirmation banner. */
+    private fun renderLocation() {
+        val hasLocation = deliveryAddress.isNotBlank()
+        binding.locationBanner.visibility = if (hasLocation) View.GONE else View.VISIBLE
+        binding.locationSet.visibility = if (hasLocation) View.VISIBLE else View.GONE
+        if (hasLocation) {
+            binding.locationSet.text = getString(R.string.location_set_to, deliveryAddress)
         }
     }
 
@@ -90,19 +108,61 @@ class CartFragment : Fragment() {
         }
     }
 
-    private fun promptCheckout() {
+    /** Prompts for / edits the delivery address and saves it to the profile. */
+    private fun showAddressDialog(afterSave: (() -> Unit)?) {
+        val session = SupabaseAuth.currentSession(requireContext()) ?: return
         val input = EditText(requireContext()).apply {
             hint = getString(R.string.delivery_address_hint)
-            setText("221 Long Street, Cape Town, 8001")
+            setText(deliveryAddress)
+            setSelection(text.length)
         }
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.checkout)
-            .setMessage(R.string.checkout_prompt)
+            .setTitle(R.string.delivery_address_title)
             .setView(input)
-            .setPositiveButton(R.string.place_order) { _, _ ->
-                val address = input.text.toString().ifBlank { "No address provided" }
-                placeOrder(address)
+            .setPositiveButton(R.string.save_location) { _, _ ->
+                val entered = input.text.toString().trim()
+                if (entered.isEmpty()) {
+                    android.widget.Toast.makeText(
+                        requireContext(), R.string.delivery_address_required,
+                        android.widget.Toast.LENGTH_SHORT
+                    ).show()
+                    return@setPositiveButton
+                }
+                viewLifecycleOwner.lifecycleScope.launch {
+                    ShopRepository.updateAddress(session, entered)
+                    deliveryAddress = entered
+                    if (_binding != null) renderLocation()
+                    afterSave?.invoke()
+                }
             }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun promptCheckout() {
+        // Require a delivery location before an order can be placed.
+        if (deliveryAddress.isBlank()) {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.delivery_address_title)
+                .setMessage(R.string.need_location_to_order)
+                .setPositiveButton(R.string.set_location) { _, _ ->
+                    showAddressDialog(afterSave = { confirmOrderDialog() })
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+            return
+        }
+        confirmOrderDialog()
+    }
+
+    /** Final confirmation once a location exists. */
+    private fun confirmOrderDialog() {
+        if (deliveryAddress.isBlank()) return
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.checkout)
+            .setMessage(getString(R.string.location_set_to, deliveryAddress))
+            .setPositiveButton(R.string.place_order) { _, _ -> placeOrder(deliveryAddress) }
+            .setNeutralButton(R.string.set_location) { _, _ -> showAddressDialog(afterSave = null) }
             .setNegativeButton(R.string.cancel, null)
             .show()
     }

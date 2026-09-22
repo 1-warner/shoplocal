@@ -2,13 +2,18 @@ package com.noor.shoplocal.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.noor.shoplocal.R
+import com.noor.shoplocal.data.Pricing
+import com.noor.shoplocal.data.ShopRepository
+import com.noor.shoplocal.data.SupabaseAuth
 import com.noor.shoplocal.databinding.ActivityMainBinding
 import com.noor.shoplocal.ui.cart.CartFragment
 import com.noor.shoplocal.ui.home.HomeFragment
 import com.noor.shoplocal.ui.market.MarketplaceFragment
 import com.noor.shoplocal.ui.profile.ProfileFragment
 import com.noor.shoplocal.ui.wishlist.WishlistFragment
+import kotlinx.coroutines.launch
 
 /**
  * The signed-in shell. A BottomNavigationView switches between the four main
@@ -38,6 +43,22 @@ class MainActivity : BaseActivity() {
 
         if (savedInstanceState == null) {
             binding.bottomNav.selectedItemId = R.id.nav_home
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshCartBadge()
+    }
+
+    /** Shows the live item count as a badge on the Cart tab. */
+    fun refreshCartBadge() {
+        val session = SupabaseAuth.currentSession(this) ?: return
+        lifecycleScope.launch {
+            val count = Pricing.itemCount(ShopRepository.cart(session))
+            val badge = binding.bottomNav.getOrCreateBadge(R.id.nav_cart)
+            badge.isVisible = count > 0
+            badge.number = count
         }
     }
 

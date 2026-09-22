@@ -36,6 +36,10 @@ object ShopRepository {
         .build()
     private val JSON = "application/json; charset=utf-8".toMediaType()
 
+    /** Application context, used only to refresh an expired token on a 401. */
+    private var appContext: android.content.Context? = null
+    fun attach(context: android.content.Context) { appContext = context.applicationContext }
+
     // ---- Request helpers -----------------------------------------------------
 
     private fun get(path: String, token: String? = null): Request.Builder =
@@ -50,6 +54,20 @@ object ShopRepository {
     private fun Request.runForString(): String {
         client.newCall(this).execute().use { resp ->
             val text = resp.body?.string().orEmpty()
+            // An authenticated request that comes back 401 usually means the access
+            // token expired. Refresh it once and retry the identical request, so the
+            // cart/wishlist/orders keep working long after login.
+            if (resp.code == 401 && header("Authorization") != null) {
+                val newToken = appContext?.let { SupabaseAuth.refreshBlocking(it) }
+                if (newToken != null) {
+                    val retried = newBuilder().header("Authorization", "Bearer $newToken").build()
+                    client.newCall(retried).execute().use { r2 ->
+                        val t2 = r2.body?.string().orEmpty()
+                        if (!r2.isSuccessful) error(parseError(t2, r2.code))
+                        return t2
+                    }
+                }
+            }
             if (!resp.isSuccessful) error(parseError(text, resp.code))
             return text
         }
@@ -442,6 +460,19 @@ object ShopRepository {
         withContext(Dispatchers.IO) {
             runCatching {
                 val payload = JSONObject().put("is_subscriber", subscribed).toString()
+                authed("profiles?id=eq.${session.userId}", session.accessToken)
+                    .addHeader("Prefer", "return=minimal")
+                    .patch(payload.toRequestBody(JSON))
+                    .build().runForString()
+                Unit
+            }
+        }
+
+    /** Saves just the delivery address (used by the cart's "set location" prompt). */
+    suspend fun updateAddress(session: Session, address: String): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val payload = JSONObject().put("address", address).toString()
                 authed("profiles?id=eq.${session.userId}", session.accessToken)
                     .addHeader("Prefer", "return=minimal")
                     .patch(payload.toRequestBody(JSON))

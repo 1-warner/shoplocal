@@ -2,6 +2,7 @@ package com.noor.shoplocal
 
 import android.app.Application
 import android.util.Log
+import com.noor.shoplocal.data.ShopRepository
 import com.noor.shoplocal.util.AppTheme
 
 /**
@@ -11,6 +12,7 @@ import com.noor.shoplocal.util.AppTheme
 class ShopLocalApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        ShopRepository.attach(this)
         AppTheme.applyFromPrefs(this)
         Log.i("ShopLocalApp", "ShopLocal started")
     }

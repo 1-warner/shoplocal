@@ -15,6 +15,48 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
+    <!-- Location warning banner (shown when no delivery address is set) -->
+    <LinearLayout
+        android:id="@+id/locationBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFF3CD"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/location_missing"
+            android:textColor="#7A5C00"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/set_location"
+            android:textColor="@color/brand_green"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Confirmation banner (shown when a delivery address IS set) -->
+    <TextView
+        android:id="@+id/locationSet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#E6F4EA"
+        android:drawablePadding="6dp"
+        android:padding="10dp"
+        android:textColor="@color/brand_green_dark"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
