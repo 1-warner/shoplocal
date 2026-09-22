@@ -86,6 +86,48 @@ object ShopRepository {
     fun categoriesFrom(products: List<Product>): List<String> =
         listOf("All") + products.map { it.category }.distinct().sorted()
 
+    // ---- Sellers (artisan map) ----------------------------------------------
+
+    /**
+     * Loads all sellers that have map coordinates, with a count of how many
+     * products each one has, for the artisan map screen.
+     */
+    suspend fun sellers(): List<Seller> = withContext(Dispatchers.IO) {
+        runCatching {
+            val body = get(
+                "sellers?select=name,verified,location,story,lat,lng,products(count)&lat=not.is.null&order=name"
+            ).build().runForString()
+            val arr = JSONArray(body)
+            (0 until arr.length()).map { i ->
+                val o = arr.getJSONObject(i)
+                // PostgREST returns the embedded aggregate as products:[{count:N}]
+                val count = o.optJSONArray("products")?.optJSONObject(0)?.optInt("count", 0) ?: 0
+                Seller(
+                    name = o.optString("name", "Local artisan"),
+                    verified = o.optBoolean("verified", false),
+                    location = o.optString("location", ""),
+                    story = if (o.isNull("story")) null else o.optString("story"),
+                    lat = o.optDouble("lat", 0.0),
+                    lng = o.optDouble("lng", 0.0),
+                    productCount = count
+                )
+            }
+        }.getOrElse { Log.w(TAG, "sellers() failed: ${it.message}"); emptyList() }
+    }
+
+    /** Products for one seller (by name), used when a map pin is tapped. */
+    suspend fun productsBySeller(sellerName: String): List<Product> = withContext(Dispatchers.IO) {
+        runCatching {
+            // `sellers!inner(...)` makes the join an inner join, so filtering on the
+            // embedded seller name filters the products rows themselves.
+            val select =
+                "id,name,description,category,price,discount_price,image_url,stock,rating_avg,rating_count,origin,sellers!inner(name,verified,story)"
+            val encoded = java.net.URLEncoder.encode(sellerName, "UTF-8")
+            val path = "products?select=$select&sellers.name=eq.$encoded&order=name"
+            parseProducts(get(path).build().runForString())
+        }.getOrElse { Log.w(TAG, "productsBySeller() failed: ${it.message}"); emptyList() }
+    }
+
     // ---- Reviews -------------------------------------------------------------
 
     suspend fun reviews(productId: String): List<Review> = withContext(Dispatchers.IO) {

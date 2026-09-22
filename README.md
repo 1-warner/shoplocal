@@ -39,6 +39,7 @@ out — awarding loyalty points server-side.
 | **Local Points loyalty** *(user-defined 1)* | Earn 1 point per R10 spent; balance shown on the profile; awarded atomically at checkout | *User Defined 1* |
 | **Community reviews** *(user-defined 2)* | Read and post star reviews; product ratings recompute via a DB trigger | *User Defined 2* |
 | **Wishlist** *(user-defined 3)* | Save items for later, synced to your account | *User Defined 3* |
+| **Artisan map** | An OpenStreetMap (osmdroid) map with a pin for each seller's home town; tap a pin to meet the maker and browse their products | Extra user-defined feature |
 | **Extras** | Category filter + search, offline catalogue cache, artisan storytelling, pull-to-refresh | Polish |
 
 ---
@@ -62,6 +63,7 @@ orders, settings, logout) → **Settings** → **Orders**.
 │   ├─ product    ProductDetailActivity + ReviewAdapter                      │
 │   ├─ cart       CartFragment + CartAdapter                                 │
 │   ├─ wishlist   WishlistFragment                                          │
+│   ├─ map        ArtisanMapActivity (osmdroid seller map)                  │
 │   ├─ profile    ProfileFragment                                           │
 │   ├─ orders     OrdersActivity                                            │
 │   └─ settings   SettingsActivity                                          │
@@ -83,6 +85,7 @@ orders, settings, logout) → **Settings** → **Orders**.
 **Key libraries / SDKs**
 
 - **OkHttp** + **Kotlin Coroutines** — talk to the REST API off the main thread.
+- **osmdroid** — OpenStreetMap map view for the artisan map (no API key required).
 - **Coil** — load product images from the API.
 - **Material Components 3** — UI, theming, dark mode.
 - **AndroidX** (AppCompat, Fragment, RecyclerView, ConstraintLayout, SwipeRefresh).

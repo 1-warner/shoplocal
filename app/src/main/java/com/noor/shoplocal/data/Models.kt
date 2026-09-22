@@ -56,6 +56,17 @@ data class Review(
     val createdAt: String
 )
 
+/** A verified local artisan/seller, with map coordinates for the artisan map. */
+data class Seller(
+    val name: String,
+    val verified: Boolean,
+    val location: String,
+    val story: String?,
+    val lat: Double,
+    val lng: Double,
+    val productCount: Int
+)
+
 /** The signed-in user's profile, including their Local Points balance and settings. */
 data class Profile(
     val id: String,

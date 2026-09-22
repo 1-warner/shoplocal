@@ -21,6 +21,10 @@
     <string name="have_account">Usunayo i-akhawunti? Ngena</string>
 
     <string name="search_hint">Sesha imikhiqizo yendawo</string>
+    <string name="view_artisan_map">🗺  Imephu yabakhandi</string>
+    <string name="artisan_map_title">Imephu yabakhandi</string>
+    <string name="artisan_map_hint">Thepha isikhombi ukuze uhlangane nomkhandi ubuke imikhiqizo yakhe.</string>
+    <string name="their_products">Imikhiqizo yabo</string>
     <string name="no_products">Ayikho imikhiqizo ehambisana nosesho lwakho.</string>
 
     <string name="add_to_cart">Faka ekalishini</string>

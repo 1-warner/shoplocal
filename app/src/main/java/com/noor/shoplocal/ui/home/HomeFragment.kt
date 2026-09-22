@@ -45,6 +45,11 @@ class HomeFragment : Fragment() {
 
         binding.swipeRefresh.setOnRefreshListener { load() }
 
+        binding.btnArtisanMap.setOnClickListener {
+            startActivity(android.content.Intent(requireContext(),
+                com.noor.shoplocal.ui.map.ArtisanMapActivity::class.java))
+        }
+
         binding.searchInput.doAfterTextChanged {
             // Debounce so we filter after the user pauses typing.
             searchJob?.cancel()

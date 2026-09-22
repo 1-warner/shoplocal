@@ -69,6 +69,9 @@ dependencies {
     // Coil — external image-loading library for product photos served by the API
     implementation("io.coil-kt:coil:2.5.0")
 
+    // osmdroid — OpenStreetMap map view for the "artisan map" (no API key needed)
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
+
     // ---- Testing ----
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")

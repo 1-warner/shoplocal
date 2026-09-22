@@ -21,6 +21,10 @@
     <string name="have_account">Het reeds \'n rekening? Meld aan</string>
 
     <string name="search_hint">Soek plaaslike produkte</string>
+    <string name="view_artisan_map">🗺  Vervaardigerkaart</string>
+    <string name="artisan_map_title">Vervaardigerkaart</string>
+    <string name="artisan_map_hint">Tik \'n speld om die maker te ontmoet en hul produkte te blaai.</string>
+    <string name="their_products">Hul produkte</string>
     <string name="no_products">Geen produkte pas by jou soektog nie.</string>
 
     <string name="add_to_cart">Voeg by mandjie</string>
