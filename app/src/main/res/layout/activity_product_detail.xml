@@ -14,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/brand_green"
+            app:menu="@menu/product_detail_menu"
             app:navigationIcon="@android:drawable/ic_menu_revert"
             app:title="@string/app_name"
             app:titleTextColor="@color/white" />
@@ -163,6 +164,29 @@
                             android:textSize="13sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+
+                <!-- Where the maker is based (embedded map) -->
+                <LinearLayout
+                    android:id="@+id/mapSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:text="@string/where_made"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <org.osmdroid.views.MapView
+                        android:id="@+id/map"
+                        android:layout_width="match_parent"
+                        android:layout_height="180dp"
+                        android:layout_marginTop="6dp" />
+                </LinearLayout>
 
                 <!-- Reviews -->
                 <TextView

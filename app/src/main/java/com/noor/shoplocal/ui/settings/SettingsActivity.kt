@@ -78,6 +78,7 @@ class SettingsActivity : BaseActivity() {
             binding.inputName.setText(profile.name)
             binding.inputPhone.setText(profile.phone ?: "")
             binding.inputAddress.setText(profile.address ?: "")
+            binding.switchSubscribe.isChecked = profile.isSubscriber
         }
     }
 
@@ -111,6 +112,7 @@ class SettingsActivity : BaseActivity() {
                     notifyPush = binding.switchPush.isChecked,
                     notifyEmail = binding.switchEmail.isChecked
                 )
+                ShopRepository.setSubscriber(session, binding.switchSubscribe.isChecked)
             }
         }
 

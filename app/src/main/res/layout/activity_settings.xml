@@ -114,6 +114,16 @@
                 android:paddingVertical="8dp"
                 android:text="@string/email_notifications" />
 
+            <!-- Membership (TakealotMORE-style free delivery) -->
+            <TextView style="@style/SettingsSection" android:text="@string/subscription" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switchSubscribe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:text="@string/subscription_desc" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSave"
                 android:layout_width="match_parent"

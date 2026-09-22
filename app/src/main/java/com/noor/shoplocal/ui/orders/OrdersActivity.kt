@@ -7,6 +7,7 @@ import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.noor.shoplocal.R
 import com.noor.shoplocal.data.Order
 import com.noor.shoplocal.data.ShopRepository
@@ -32,6 +33,11 @@ class OrdersActivity : BaseActivity() {
         binding.orderList.layoutManager = LinearLayoutManager(this)
         binding.orderList.adapter = adapter
 
+        adapter.onCancel = { order -> confirmCancel(order) }
+        loadOrders()
+    }
+
+    private fun loadOrders() {
         val session = SupabaseAuth.currentSession(this) ?: run { finish(); return }
         lifecycleScope.launch {
             val orders = ShopRepository.orders(session)
@@ -40,9 +46,25 @@ class OrdersActivity : BaseActivity() {
         }
     }
 
+    private fun confirmCancel(order: Order) {
+        val session = SupabaseAuth.currentSession(this) ?: return
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.cancel_order)
+            .setMessage(R.string.cancel_order_confirm)
+            .setPositiveButton(R.string.cancel_order) { _, _ ->
+                lifecycleScope.launch {
+                    ShopRepository.cancelOrder(session, order.id)
+                    loadOrders()
+                }
+            }
+            .setNegativeButton(R.string.back, null)
+            .show()
+    }
+
     /** Nested adapter — orders are simple enough to keep the adapter in-file. */
     class OrderAdapter : RecyclerView.Adapter<OrderAdapter.VH>() {
         private val items = mutableListOf<Order>()
+        var onCancel: ((Order) -> Unit)? = null
 
         fun submit(orders: List<Order>) {
             items.clear(); items.addAll(orders); notifyDataSetChanged()
@@ -63,6 +85,11 @@ class OrdersActivity : BaseActivity() {
             holder.b.orderStatus.text = o.status.replaceFirstChar { it.uppercase() }
             holder.b.orderPoints.text = ctx.getString(R.string.points_earned, o.pointsEarned)
             holder.b.orderDate.text = o.createdAt.take(10)
+
+            // A pending/processing order can still be cancelled.
+            val cancellable = o.status.lowercase() in listOf("pending", "processing")
+            holder.b.btnCancel.visibility = if (cancellable) View.VISIBLE else View.GONE
+            holder.b.btnCancel.setOnClickListener { onCancel?.invoke(o) }
         }
     }
 }

@@ -30,6 +30,7 @@ class CartFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var adapter: CartAdapter
     private var lines: List<CartLine> = emptyList()
+    private var isSubscriber = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, s: Bundle?): View {
         _binding = FragmentCartBinding.inflate(inflater, container, false)
@@ -56,6 +57,7 @@ class CartFragment : Fragment() {
         val session = SupabaseAuth.currentSession(requireContext()) ?: return
         viewLifecycleOwner.lifecycleScope.launch {
             lines = ShopRepository.cart(session)
+            isSubscriber = ShopRepository.profile(session)?.isSubscriber ?: false
             if (_binding == null) return@launch
             adapter.submit(lines)
             renderTotals()
@@ -64,8 +66,8 @@ class CartFragment : Fragment() {
 
     private fun renderTotals() {
         val subtotal = Pricing.subtotal(lines)
-        val delivery = Pricing.deliveryFee(subtotal)
-        val total = Pricing.total(subtotal)
+        val delivery = Pricing.deliveryFee(subtotal, isSubscriber)
+        val total = Pricing.total(subtotal, isSubscriber)
 
         binding.subtotalValue.text = ProductAdapter.rand(subtotal)
         binding.deliveryValue.text =
@@ -107,7 +109,7 @@ class CartFragment : Fragment() {
 
     private fun placeOrder(address: String) {
         val session = SupabaseAuth.currentSession(requireContext()) ?: return
-        val delivery = Pricing.deliveryFee(Pricing.subtotal(lines))
+        val delivery = Pricing.deliveryFee(Pricing.subtotal(lines), isSubscriber)
         binding.btnCheckout.isEnabled = false
         viewLifecycleOwner.lifecycleScope.launch {
             val result = ShopRepository.placeOrder(session, address, delivery)

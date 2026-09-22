@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:scrollbars="none"
         android:paddingHorizontal="12dp"
-        android:paddingVertical="8dp">
+        android:paddingTop="8dp">
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/categoryChips"
@@ -81,6 +81,69 @@
             app:singleLine="true"
             app:singleSelection="true" />
     </HorizontalScrollView>
+
+    <!-- Sort + deals controls -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="4dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSort"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="0dp"
+            android:text="@string/sort"
+            app:icon="@android:drawable/ic_menu_sort_by_size" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipDeals"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/deals_only"
+            app:chipIcon="@android:drawable/ic_menu_compass"
+            android:checkable="true" />
+
+        <TextView
+            android:id="@+id/resultCount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:textColor="@color/grey_600"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- Recently viewed strip (hidden until there is history) -->
+    <LinearLayout
+        android:id="@+id/recentSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="12dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recently_viewed"
+            android:textStyle="bold"
+            android:textSize="13sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recentList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:clipToPadding="false" />
+    </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
