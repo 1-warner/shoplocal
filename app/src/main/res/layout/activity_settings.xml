@@ -58,13 +58,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="@string/address">
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:hint="@string/your_area">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/inputAddress"
+                <AutoCompleteTextView
+                    android:id="@+id/inputArea"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPostalAddress" />
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Language -->

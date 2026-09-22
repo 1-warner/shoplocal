@@ -16,6 +16,7 @@ import com.noor.shoplocal.R
 import com.noor.shoplocal.data.Prefs
 import com.noor.shoplocal.data.Product
 import com.noor.shoplocal.data.ShopRepository
+import com.noor.shoplocal.data.SupabaseAuth
 import com.noor.shoplocal.databinding.FragmentHomeBinding
 import com.noor.shoplocal.ui.product.ProductDetailActivity
 import kotlinx.coroutines.Job
@@ -37,6 +38,9 @@ class HomeFragment : Fragment() {
     private var selectedCategory = "All"
     private var sort = ShopRepository.Sort.NEWEST
     private var dealsOnly = false
+    private var area = ShopRepository.Area.ALL
+    private var userLat: Double? = null
+    private var userLng: Double? = null
     private var searchJob: Job? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, s: Bundle?): View {
@@ -66,6 +70,14 @@ class HomeFragment : Fragment() {
             dealsOnly = checked
             applyFilters()
         }
+        binding.areaChips.setOnCheckedStateChangeListener { _, checkedIds ->
+            area = when (checkedIds.firstOrNull()) {
+                R.id.chipAreaNear -> ShopRepository.Area.NEARBY
+                R.id.chipAreaElse -> ShopRepository.Area.ELSEWHERE
+                else -> ShopRepository.Area.ALL
+            }
+            applyFilters()
+        }
 
         binding.searchInput.doAfterTextChanged {
             searchJob?.cancel()
@@ -93,6 +105,14 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 allProducts = ShopRepository.products(requireContext())
+                // Load the user's saved area so we can show "in your area" + distances.
+                SupabaseAuth.currentSession(requireContext())?.let { session ->
+                    val profile = ShopRepository.profile(session)
+                    userLat = profile?.lat
+                    userLng = profile?.lng
+                    adapter.userLat = userLat
+                    adapter.userLng = userLng
+                }
                 buildCategoryChips(ShopRepository.categoriesFrom(allProducts))
                 applyFilters()
                 showRecentlyViewed()
@@ -145,11 +165,19 @@ class HomeFragment : Fragment() {
     private fun applyFilters() {
         if (_binding == null) return
         val query = binding.searchInput.text?.toString()?.trim().orEmpty()
-        val filtered = ShopRepository.filterAndSort(allProducts, selectedCategory, query, sort, dealsOnly)
+        var filtered = ShopRepository.filterAndSort(allProducts, selectedCategory, query, sort, dealsOnly)
+        filtered = ShopRepository.filterByArea(filtered, userLat, userLng, area)
         adapter.submitList(filtered)
         binding.resultCount.text = resources.getQuantityStringSafe(filtered.size)
+
         binding.emptyState.visibility = if (filtered.isEmpty()) View.VISIBLE else View.GONE
-        if (filtered.isEmpty()) binding.emptyState.text = getString(R.string.no_products)
+        if (filtered.isEmpty()) {
+            // A helpful message when "in my area" is chosen but no location is set.
+            binding.emptyState.text = if (area != ShopRepository.Area.ALL && userLat == null)
+                getString(R.string.area_set_location)
+            else
+                getString(R.string.no_products)
+        }
     }
 
     private fun showRecentlyViewed() {

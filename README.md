@@ -41,11 +41,12 @@ out — awarding loyalty points server-side.
 | **Wishlist** *(user-defined 3)* | Save items for later, synced to your account | *User Defined 3* |
 | **Artisan map** | An OpenStreetMap (osmdroid) map with a pin for each seller's home town; tap a pin to meet the maker and browse their products | Extra user-defined feature |
 | **Member marketplace** | Facebook-Marketplace-style flow: any member can **list an item to sell**; listings show on a map with an embedded location and a "contact seller" share | Extra user-defined feature |
+| **In your area** | Set your area (a SA city) and Home filters to items **near you** vs **other areas**, with each product card showing the distance to the maker | Extra user-defined feature |
 | **Sort, filter & deals** | Sort by price/rating/newest, filter by category, and a **Deals** toggle (Superbalist/Bash/Takealot-style) | Polish |
 | **ShopLocal MORE** | TakealotMORE-style subscription giving **free delivery** on every order | Polish |
 | **Recently viewed** | A Shein/Takealot-style strip of the products you last opened | Polish |
 | **Share** | Share any product or listing via the Android share sheet | Polish |
-| **Extras** | Offline catalogue cache, artisan storytelling, pull-to-refresh, 34-item catalogue across 12 artisans | Polish |
+| **Extras** | Offline catalogue cache, artisan storytelling, pull-to-refresh, **48-item catalogue across 17 artisans in 9 provinces**, modern Material 3 styling (rounded cards, sale badges, pill buttons) | Polish |
 
 > **See [REFERENCES.md](REFERENCES.md)** for a full, Harvard-style reference list:
 > which competitor app each feature came from, every library/SDK and its licence,

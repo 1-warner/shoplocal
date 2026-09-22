@@ -21,6 +21,10 @@ class ProductAdapter(
     private val onClick: (Product) -> Unit
 ) : ListAdapter<Product, ProductAdapter.VH>(DIFF) {
 
+    // Optional user location — when set, product cards show distance to the maker.
+    var userLat: Double? = null
+    var userLng: Double? = null
+
     companion object {
         private val DIFF = object : DiffUtil.ItemCallback<Product>() {
             override fun areItemsTheSame(a: Product, b: Product) = a.id == b.id
@@ -45,15 +49,24 @@ class ProductAdapter(
         val p = getItem(position)
         val b = holder.b
         b.productName.text = p.name
-        b.sellerName.text = p.sellerName
+        // Show distance to the maker when we know both locations, else just the name.
+        val uLat = userLat; val uLng = userLng
+        b.sellerName.text = if (uLat != null && uLng != null && p.sellerLat != null && p.sellerLng != null) {
+            val km = com.noor.shoplocal.data.Geo.distanceKm(uLat, uLng, p.sellerLat, p.sellerLng).toInt()
+            "${p.sellerName} · ${km} km"
+        } else {
+            p.sellerName
+        }
         b.price.text = rand(p.effectivePrice)
 
         if (p.isOnSale) {
             b.oldPrice.visibility = android.view.View.VISIBLE
             b.oldPrice.text = rand(p.price)
             b.oldPrice.paintFlags = b.oldPrice.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
+            b.saleBadge.visibility = android.view.View.VISIBLE
         } else {
             b.oldPrice.visibility = android.view.View.GONE
+            b.saleBadge.visibility = android.view.View.GONE
         }
 
         b.rating.text = if (p.ratingCount > 0)

@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/brand_green"
+        android:background="@drawable/bg_header"
         android:padding="16dp"
         android:text="@string/cart_title"
         android:textColor="@color/white"

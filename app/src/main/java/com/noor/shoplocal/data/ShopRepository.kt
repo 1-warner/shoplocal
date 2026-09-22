@@ -110,6 +110,23 @@ object ShopRepository {
             filterAndSort(all, category, search, sort, onSaleOnly)
         }
 
+    /** Area filter for the "In your area" feature. */
+    enum class Area { ALL, NEARBY, ELSEWHERE }
+
+    /**
+     * Splits the catalogue by proximity to the user's saved location. Products
+     * whose seller has no coordinates are treated as "elsewhere". With no user
+     * location, ALL is returned unchanged.
+     */
+    fun filterByArea(products: List<Product>, userLat: Double?, userLng: Double?, area: Area): List<Product> {
+        if (area == Area.ALL || userLat == null || userLng == null) return products
+        return products.filter { p ->
+            val near = p.sellerLat != null && p.sellerLng != null &&
+                Geo.isNearby(userLat, userLng, p.sellerLat, p.sellerLng)
+            if (area == Area.NEARBY) near else !near
+        }
+    }
+
     /** Pure client-side filtering + sorting, reused by both the network and cache paths. */
     fun filterAndSort(
         all: List<Product>,
@@ -339,7 +356,7 @@ object ShopRepository {
     suspend fun profile(session: Session): Profile? = withContext(Dispatchers.IO) {
         runCatching {
             val body = authed(
-                "profiles?select=id,name,email,loyalty_points,phone,address,is_subscriber&id=eq.${session.userId}",
+                "profiles?select=id,name,email,loyalty_points,phone,address,is_subscriber,lat,lng&id=eq.${session.userId}",
                 session.accessToken
             ).build().runForString()
             val arr = JSONArray(body)
@@ -347,12 +364,14 @@ object ShopRepository {
             val o = arr.getJSONObject(0)
             Profile(
                 id = o.getString("id"),
-                name = o.optString("name", session.name),
-                email = o.optString("email", session.email),
+                name = str(o, "name") ?: session.name,
+                email = str(o, "email") ?: session.email,
                 loyaltyPoints = o.optInt("loyalty_points", 0),
-                phone = o.optString("phone").ifBlank { null },
-                address = o.optString("address").ifBlank { null },
-                isSubscriber = o.optBoolean("is_subscriber", false)
+                phone = str(o, "phone"),
+                address = str(o, "address"),
+                isSubscriber = o.optBoolean("is_subscriber", false),
+                lat = if (o.isNull("lat")) null else o.optDouble("lat"),
+                lng = if (o.isNull("lng")) null else o.optDouble("lng")
             )
         }.getOrElse { Log.w(TAG, "profile() failed: ${it.message}"); null }
     }
@@ -468,11 +487,18 @@ object ShopRepository {
             }
         }
 
-    /** Saves just the delivery address (used by the cart's "set location" prompt). */
-    suspend fun updateAddress(session: Session, address: String): Result<Unit> =
+    /**
+     * Saves the delivery location — address text plus coordinates, so the app can
+     * work out which items are "in your area". Used by the cart / settings prompts.
+     */
+    suspend fun updateLocation(session: Session, address: String, lat: Double?, lng: Double?): Result<Unit> =
         withContext(Dispatchers.IO) {
             runCatching {
-                val payload = JSONObject().put("address", address).toString()
+                val payload = JSONObject()
+                    .put("address", address)
+                    .put("lat", lat ?: JSONObject.NULL)
+                    .put("lng", lng ?: JSONObject.NULL)
+                    .toString()
                 authed("profiles?id=eq.${session.userId}", session.accessToken)
                     .addHeader("Prefer", "return=minimal")
                     .patch(payload.toRequestBody(JSON))
@@ -553,6 +579,17 @@ object ShopRepository {
         pointsEarned = o.optInt("points_earned", 0),
         createdAt = o.optString("created_at", "")
     )
+
+    /**
+     * Safely reads a string field, returning null for a missing value, a JSON null,
+     * a blank string, or the literal "null" that Android's optString produces for
+     * JSON nulls (the cause of "null" showing in the settings fields).
+     */
+    private fun str(o: JSONObject, key: String): String? {
+        if (o.isNull(key)) return null
+        val v = o.optString(key).trim()
+        return if (v.isEmpty() || v.equals("null", ignoreCase = true)) null else v
+    }
 
     private fun parseError(text: String, code: Int): String =
         try {

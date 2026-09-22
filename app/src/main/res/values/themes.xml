@@ -3,18 +3,52 @@
 
     <!-- Base application theme (light). DayNight lets Settings switch to dark. -->
     <style name="Theme.ShopLocal" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Colour roles -->
         <item name="colorPrimary">@color/brand_green</item>
         <item name="colorPrimaryDark">@color/brand_green_dark</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/brand_green_light</item>
+        <item name="colorOnPrimaryContainer">@color/brand_green_dark</item>
         <item name="colorSecondary">@color/brand_orange</item>
         <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondaryContainer">@color/brand_gold_light</item>
+        <item name="colorOnSecondaryContainer">#5A4200</item>
         <item name="colorTertiary">@color/brand_gold</item>
+
+        <!-- Rounded, modern component shapes -->
+        <item name="shapeAppearanceCornerSmall">@style/ShapeAppearance.ShopLocal.Small</item>
+        <item name="shapeAppearanceCornerMedium">@style/ShapeAppearance.ShopLocal.Medium</item>
+        <item name="shapeAppearanceCornerLarge">@style/ShapeAppearance.ShopLocal.Large</item>
+
+        <!-- Pill-shaped buttons for a modern feel -->
+        <item name="materialButtonStyle">@style/Widget.ShopLocal.Button</item>
+
+        <!-- System bars -->
         <item name="android:statusBarColor">@color/brand_green</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
     </style>
 
     <!-- Splash screen theme with the brand-green background. -->
     <style name="Theme.ShopLocal.Splash">
         <item name="android:windowBackground">@color/brand_green</item>
         <item name="android:statusBarColor">@color/brand_green</item>
+    </style>
+
+    <!-- Shapes -->
+    <style name="ShapeAppearance.ShopLocal.Small" parent="ShapeAppearance.Material3.Corner.Small">
+        <item name="cornerSize">10dp</item>
+    </style>
+    <style name="ShapeAppearance.ShopLocal.Medium" parent="ShapeAppearance.Material3.Corner.Medium">
+        <item name="cornerSize">18dp</item>
+    </style>
+    <style name="ShapeAppearance.ShopLocal.Large" parent="ShapeAppearance.Material3.Corner.Large">
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <!-- Rounded, comfortably padded button -->
+    <style name="Widget.ShopLocal.Button" parent="Widget.Material3.Button">
+        <item name="cornerRadius">26dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
     </style>
 </resources>

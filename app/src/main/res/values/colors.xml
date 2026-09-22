@@ -3,7 +3,9 @@
     <!-- Brand palette from the Part 1 design (SA flag inspired) -->
     <color name="brand_green">#006B54</color>
     <color name="brand_green_dark">#004C3C</color>
+    <color name="brand_green_light">#CDE9E0</color>
     <color name="brand_gold">#FFB612</color>
+    <color name="brand_gold_light">#FFE9B0</color>
     <color name="brand_orange">#E87A1A</color>
 
     <color name="white">#FFFFFF</color>

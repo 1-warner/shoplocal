@@ -6,6 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.noor.shoplocal.R
 import com.noor.shoplocal.data.Prefs
+import com.noor.shoplocal.data.SaCities
 import com.noor.shoplocal.data.ShopRepository
 import com.noor.shoplocal.data.SupabaseAuth
 import com.noor.shoplocal.databinding.ActivitySettingsBinding
@@ -33,11 +34,18 @@ class SettingsActivity : BaseActivity() {
 
         binding.toolbar.setNavigationOnClickListener { finish() }
         setupLanguage()
+        setupArea()
         setupTheme()
         setupNotifications()
         prefillProfile()
 
         binding.btnSave.setOnClickListener { save() }
+    }
+
+    private fun setupArea() {
+        binding.inputArea.setAdapter(
+            ArrayAdapter(this, android.R.layout.simple_list_item_1, SaCities.NAMES)
+        )
     }
 
     private fun setupLanguage() {
@@ -77,7 +85,7 @@ class SettingsActivity : BaseActivity() {
             val profile = ShopRepository.profile(session) ?: return@launch
             binding.inputName.setText(profile.name)
             binding.inputPhone.setText(profile.phone ?: "")
-            binding.inputAddress.setText(profile.address ?: "")
+            binding.inputArea.setText(profile.address ?: "", false)
             binding.switchSubscribe.isChecked = profile.isSubscriber
         }
     }
@@ -101,17 +109,21 @@ class SettingsActivity : BaseActivity() {
         // Sync to the server profile (fire-and-forget; failures are non-fatal).
         val session = SupabaseAuth.currentSession(this)
         if (session != null) {
+            val areaName = binding.inputArea.text?.toString()?.trim().orEmpty()
+            val city = SaCities.byName(areaName)
             lifecycleScope.launch {
                 ShopRepository.updateProfile(
                     session = session,
                     name = binding.inputName.text?.toString()?.trim().orEmpty(),
                     phone = binding.inputPhone.text?.toString()?.trim().orEmpty(),
-                    address = binding.inputAddress.text?.toString()?.trim().orEmpty(),
+                    address = areaName,
                     language = languageCode,
                     theme = themeMode,
                     notifyPush = binding.switchPush.isChecked,
                     notifyEmail = binding.switchEmail.isChecked
                 )
+                // Save coordinates for the chosen area so "In your area" works.
+                if (city != null) ShopRepository.updateLocation(session, city.name, city.lat, city.lng)
                 ShopRepository.setSubscriber(session, binding.switchSubscribe.isChecked)
             }
         }

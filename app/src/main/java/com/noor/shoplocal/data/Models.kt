@@ -104,5 +104,9 @@ data class Profile(
     val loyaltyPoints: Int,
     val phone: String?,
     val address: String?,
-    val isSubscriber: Boolean = false
-)
+    val isSubscriber: Boolean = false,
+    val lat: Double? = null,
+    val lng: Double? = null
+) {
+    val hasLocation: Boolean get() = lat != null && lng != null
+}

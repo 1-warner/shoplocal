@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +12,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.noor.shoplocal.R
 import com.noor.shoplocal.data.CartLine
 import com.noor.shoplocal.data.Pricing
+import com.noor.shoplocal.data.SaCities
 import com.noor.shoplocal.data.ShopRepository
 import com.noor.shoplocal.data.SupabaseAuth
 import com.noor.shoplocal.databinding.FragmentCartBinding
@@ -108,29 +108,16 @@ class CartFragment : Fragment() {
         }
     }
 
-    /** Prompts for / edits the delivery address and saves it to the profile. */
+    /** Lets the user choose their delivery area (a city) and saves it with coordinates. */
     private fun showAddressDialog(afterSave: (() -> Unit)?) {
         val session = SupabaseAuth.currentSession(requireContext()) ?: return
-        val input = EditText(requireContext()).apply {
-            hint = getString(R.string.delivery_address_hint)
-            setText(deliveryAddress)
-            setSelection(text.length)
-        }
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.delivery_address_title)
-            .setView(input)
-            .setPositiveButton(R.string.save_location) { _, _ ->
-                val entered = input.text.toString().trim()
-                if (entered.isEmpty()) {
-                    android.widget.Toast.makeText(
-                        requireContext(), R.string.delivery_address_required,
-                        android.widget.Toast.LENGTH_SHORT
-                    ).show()
-                    return@setPositiveButton
-                }
+            .setItems(SaCities.NAMES.toTypedArray()) { _, which ->
+                val city = SaCities.ALL[which]
                 viewLifecycleOwner.lifecycleScope.launch {
-                    ShopRepository.updateAddress(session, entered)
-                    deliveryAddress = entered
+                    ShopRepository.updateLocation(session, city.name, city.lat, city.lng)
+                    deliveryAddress = city.name
                     if (_binding != null) renderLocation()
                     afterSave?.invoke()
                 }
