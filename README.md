@@ -196,7 +196,7 @@ also shows a live item-count badge.
 
 ## 9. Demonstration video
 
-📹 **Watch the walkthrough:** _<add your video link here>_
+📹 **Watch the walkthrough:** https://youtu.be/_J2R1znujEc
 
 The video shows registration & login (with the password encrypted), changing
 settings (language + theme), browsing the API-backed catalogue, adding to the
