@@ -5,7 +5,8 @@ package com.noor.shoplocal.data
  *
  * The backend is a Supabase project (Postgres + PostgREST) that exposes a RESTful
  * API over HTTPS:
- *   - GoTrue auth endpoints under `/auth/v1/...`  (register / login, bcrypt-hashed)
+ *   - GoTrue auth endpoints under `/auth/v1/...`  (register / login, bcrypt-hashed,
+ *     plus `/authorize` for Google / Apple social sign-in)
  *   - PostgREST CRUD endpoints under `/rest/v1/<table>`
  *   - A custom endpoint `/rest/v1/rpc/place_order` we authored server-side.
  *
@@ -20,4 +21,12 @@ object Supabase {
 
     const val REST = "$URL/rest/v1"
     const val AUTH = "$URL/auth/v1"
+
+    /**
+     * Where GoTrue sends the browser back to after a Google / Apple sign-in.
+     * This exact string must be listed under *Authentication → URL Configuration
+     * → Redirect URLs* in the Supabase dashboard, and it is claimed by
+     * `OAuthCallbackActivity`'s intent filter in the manifest.
+     */
+    const val OAUTH_REDIRECT = "shoplocal://auth-callback"
 }

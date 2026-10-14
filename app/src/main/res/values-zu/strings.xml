@@ -27,6 +27,12 @@
     <string name="register_title">Joyina i-ShopLocal</string>
     <string name="register_subtitle">Sekela abenzi baseNingizimu Afrika</string>
     <string name="no_account">Umusha lapha? Dala i-akhawunti</string>
+    <string name="login_or">noma qhubeka nge-</string>
+    <string name="continue_with_google">Qhubeka nge-Google</string>
+    <string name="continue_with_apple">Qhubeka nge-Apple</string>
+    <string name="oauth_failed">Ayikwazanga ukuqeda ukungena. Sicela uzame futhi.</string>
+    <string name="no_browser">Ayikho i-browser etholakalayo ukungena ngayo.</string>
+    <string name="provider_unavailable">Ukungena nge-%1$s akusethwe okwamanje. Sicela usebenzise i-imeyili nephasiwedi yakho.</string>
     <string name="have_account">Usunayo i-akhawunti? Ngena</string>
 
     <string name="search_hint">Sesha imikhiqizo yendawo</string>

@@ -27,6 +27,26 @@
         </activity>
 
         <activity android:name=".ui.AuthActivity" android:exported="false" />
+
+        <!--
+          Catches the redirect that ends a Google / Apple sign-in. Exported
+          because the browser (a different app) starts it; singleTask so a
+          second redirect reuses this instance instead of stacking copies.
+          The scheme/host pair must match Supabase.OAUTH_REDIRECT and be listed
+          as a Redirect URL in the Supabase dashboard.
+        -->
+        <activity
+            android:name=".ui.auth.OAuthCallbackActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.ShopLocal.Splash">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="shoplocal" android:host="auth-callback" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ui.MainActivity" android:exported="false" />
         <activity android:name=".ui.product.ProductDetailActivity" android:exported="false" />
         <activity android:name=".ui.map.ArtisanMapActivity" android:exported="false" />

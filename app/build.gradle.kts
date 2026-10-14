@@ -57,6 +57,9 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
+    // Custom Tabs — hosts the Google / Apple sign-in page in the user's own
+    // browser (both providers block embedded WebViews).
+    implementation("androidx.browser:browser:1.7.0")
 
     // Lifecycle + coroutines
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
