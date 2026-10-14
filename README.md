@@ -33,6 +33,7 @@ out — awarding loyalty points server-side.
 | Area | What it does | Rubric mapping |
 |------|--------------|----------------|
 | **Register / Log in** | Email + password auth; passwords bcrypt-hashed server-side; session cached so the app skips login on relaunch | *Feature: sign in* |
+| **Google / Apple sign-in** | One-tap social login on the login screen, via the provider's own page in a Custom Tab (PKCE); no password to remember | *Feature: sign in* |
 | **Settings menu** | Edit profile, switch **language** (English / isiZulu / Afrikaans), **light/dark theme**, notification toggles — saved locally and synced to the API | *Feature: settings menu* |
 | **REST API** | A hosted Supabase (Postgres + PostgREST) backend, including a **custom `place_order` endpoint** we authored | *Creation/use of the REST API* |
 | **API integration** | Every screen (catalogue, wishlist, cart, reviews, orders, profile) reads/writes through the REST API | *Integration of the REST API* |
@@ -113,6 +114,9 @@ hosted at `https://swchtpvdtncslvlsxeul.supabase.co`.
 |--------|------|---------|
 | `POST` | `/auth/v1/signup` | Register (password bcrypt-hashed server-side) |
 | `POST` | `/auth/v1/token?grant_type=password` | Log in, returns a JWT |
+| `GET`  | `/auth/v1/authorize?provider=google\|apple` | Start a Google / Apple sign-in (opens in a Custom Tab) |
+| `POST` | `/auth/v1/token?grant_type=pkce` | Redeem the authorization code from the deep link for a session |
+| `POST` | `/auth/v1/token?grant_type=refresh_token` | Renew an expired access token |
 | `GET`  | `/rest/v1/products?select=…,sellers(...)` | Catalogue with artisan join |
 | `GET`  | `/rest/v1/reviews?product_id=eq.<id>` | Product reviews |
 | `POST` | `/rest/v1/reviews` | Post a review |
@@ -136,6 +140,80 @@ Access is protected by **Row-Level Security**: the public `anon` key can only re
 the catalogue, while each signed-in user can only see and change *their own* cart,
 wishlist, orders and reviews. The `anon` key shipped in the app is a public client
 key by design — RLS, not secrecy, is what protects the data.
+
+---
+
+### Social sign-in (Google / Apple)
+
+The login screen offers **Continue with Google** and **Continue with Apple**
+alongside email/password. The flow is the standard OAuth redirect, run through the
+device browser rather than a WebView — both providers reject embedded WebViews, and
+the user gets to see the real `google.com` / `apple.com` address bar before typing a
+password:
+
+```
+LoginFragment                 Custom Tab                GoTrue + provider
+     │  beginOAuth()               │                            │
+     │  (random code_verifier       │                            │
+     │   kept on device, only       │                            │
+     │   its SHA-256 sent)          │                            │
+     ├─ /auth/v1/authorize ────────►│──── consent screen ───────►│
+     │                              │                            │
+     │        shoplocal://auth-callback?code=…  ◄────────────────┤
+     ▼                              │
+OAuthCallbackActivity ── /auth/v1/token?grant_type=pkce ────────►│
+     │   (code + code_verifier)                                  │
+     │◄──────────── access_token + refresh_token ────────────────┤
+     ▼
+MainActivity (session cached exactly like an email login)
+```
+
+**PKCE** is what makes the deep link safe: another app that registered the same
+`shoplocal://` scheme could intercept the redirect, but the authorization code in it
+is worthless without the verifier, which never leaves the device.
+
+Everything downstream is unchanged — the social session is cached in the same
+SharedPreferences, refreshes the same way, and the `handle_new_user` trigger creates
+the same `profiles` row (its name fallback chain reads Google's `full_name` and
+Apple's `given_name`/`family_name`, since neither sends the `name` key that email
+sign-ups use).
+
+#### Backend configuration this needs
+
+The code is complete, but each provider has to be given credentials; these cannot be
+created from inside the app:
+
+1. **Supabase → Authentication → URL Configuration → Redirect URLs**
+   Add `shoplocal://auth-callback` (must match `Supabase.OAUTH_REDIRECT`).
+
+2. **Google** — [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+   → *Create credentials → OAuth client ID* → application type **Web application**
+   (not Android: the redirect lands on Supabase, not on the device). Under
+   *Authorized redirect URIs* add:
+   `https://swchtpvdtncslvlsxeul.supabase.co/auth/v1/callback`
+   Then paste the **Client ID** and **Client secret** into
+   *Supabase → Authentication → Providers → Google* and enable it.
+
+3. **Apple** — requires a paid **Apple Developer Program** membership (~$99/year).
+   In the [developer portal](https://developer.apple.com/account/resources/identifiers/list):
+   create an **App ID** with *Sign in with Apple* enabled, then a **Services ID**
+   (e.g. `com.noor.shoplocal.web`) whose *Website URLs* are domain
+   `swchtpvdtncslvlsxeul.supabase.co` and return URL
+   `https://swchtpvdtncslvlsxeul.supabase.co/auth/v1/callback`. Create a
+   *Sign in with Apple* **key**, download the `.p8`, and note the **Key ID** and
+   **Team ID**. Enter the Services ID plus the generated secret in
+   *Supabase → Authentication → Providers → Apple* and enable it.
+
+Until a provider is enabled, `/authorize` answers with a plain JSON 400
+(`"Unsupported provider: provider is not enabled"`) and never redirects back to the
+app — so the login screen checks `/auth/v1/settings` first and shows *"Google
+sign-in is not set up yet"* instead of opening a browser tab full of JSON. Check the
+live state with:
+
+```bash
+curl -s https://swchtpvdtncslvlsxeul.supabase.co/auth/v1/settings \
+  -H "apikey: <anon key>" | grep -o '"google":[a-z]*'
+```
 
 ---
 

@@ -72,6 +72,12 @@
     <string name="register_title">Join ShopLocal</string>
     <string name="register_subtitle">Support South African makers</string>
     <string name="no_account">New here? Create an account</string>
+    <string name="login_or">or continue with</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="continue_with_apple">Continue with Apple</string>
+    <string name="oauth_failed">Could not finish signing in. Please try again.</string>
+    <string name="no_browser">No browser app is available to sign in with.</string>
+    <string name="provider_unavailable">%1$s sign-in is not set up yet. Please use your email and password.</string>
     <string name="have_account">Already have an account? Log in</string>
 
     <!-- Home -->

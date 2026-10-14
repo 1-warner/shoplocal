@@ -84,6 +84,52 @@
             android:layout_marginTop="12dp"
             android:visibility="gone" />
 
+        <!-- Social sign-in: one tap, no password to remember. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/grey_300" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:text="@string/login_or"
+                android:textColor="@color/grey_600"
+                android:textSize="13sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/grey_300" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGoogle"
+            style="@style/Widget.ShopLocal.Button.Social"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/continue_with_google"
+            app:icon="@drawable/ic_google" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnApple"
+            style="@style/Widget.ShopLocal.Button.Social"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/continue_with_apple"
+            app:icon="@drawable/ic_apple"
+            app:iconTint="?attr/colorOnSurface" />
+
         <TextView
             android:id="@+id/linkRegister"
             android:layout_width="wrap_content"

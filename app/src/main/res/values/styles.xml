@@ -9,4 +9,21 @@
         <item name="android:textColor">@color/brand_green</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <!--
+      Google / Apple sign-in buttons. Outlined so the green "Log in" button stays
+      the primary action, and with iconTint cleared so each provider's mark keeps
+      its own colours (the vectors tint themselves where they need to).
+    -->
+    <style name="Widget.ShopLocal.Button.Social" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="cornerRadius">26dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">12dp</item>
+        <item name="iconTint">@null</item>
+        <item name="strokeColor">@color/grey_300</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
 </resources>

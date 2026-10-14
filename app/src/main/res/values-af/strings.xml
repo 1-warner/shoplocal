@@ -27,6 +27,12 @@
     <string name="register_title">Sluit aan by ShopLocal</string>
     <string name="register_subtitle">Ondersteun Suid-Afrikaanse makers</string>
     <string name="no_account">Nuut hier? Skep \'n rekening</string>
+    <string name="login_or">of gaan voort met</string>
+    <string name="continue_with_google">Gaan voort met Google</string>
+    <string name="continue_with_apple">Gaan voort met Apple</string>
+    <string name="oauth_failed">Kon nie die aanmelding voltooi nie. Probeer asseblief weer.</string>
+    <string name="no_browser">Geen blaaier beskikbaar om mee aan te meld nie.</string>
+    <string name="provider_unavailable">%1$s-aanmelding is nog nie opgestel nie. Gebruik asseblief jou e-pos en wagwoord.</string>
     <string name="have_account">Het reeds \'n rekening? Meld aan</string>
 
     <string name="search_hint">Soek plaaslike produkte</string>
