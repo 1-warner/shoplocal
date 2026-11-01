@@ -164,6 +164,8 @@ class SellActivity : BaseActivity() {
             )
             setLoading(false)
             result.onSuccess {
+                com.noor.shoplocal.data.firestore.FirestoreRepo
+                    .log(session.userId, com.noor.shoplocal.data.firestore.FirestoreRepo.LISTED, title)
                 Snackbar.make(binding.root, getString(R.string.listing_posted), Snackbar.LENGTH_SHORT).show()
                 finish()
             }.onFailure {

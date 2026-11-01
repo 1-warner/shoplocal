@@ -5,6 +5,8 @@
     <!-- The app talks to the hosted REST API over the internet. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Show real-time push notifications (Android 13+ asks the user at runtime). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".ShopLocalApp"
@@ -26,8 +28,21 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.AuthActivity" android:exported="false" />
+        <!-- exported + singleTask so the Google SSO redirect (shoplocal://auth-callback)
+             is delivered back to this running activity. -->
+        <activity
+            android:name=".ui.AuthActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="shoplocal" android:host="auth-callback" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ui.MainActivity" android:exported="false" />
+        <activity android:name=".ui.activity.ActivityFeedActivity" android:exported="false" />
         <activity android:name=".ui.product.ProductDetailActivity" android:exported="false" />
         <activity android:name=".ui.map.ArtisanMapActivity" android:exported="false" />
         <activity android:name=".ui.market.SellActivity" android:exported="false" />
@@ -37,6 +52,18 @@
             android:name=".ui.settings.SettingsActivity"
             android:exported="false"
             android:label="@string/settings" />
+
+        <!-- Firebase Cloud Messaging service for real-time push notifications. -->
+        <service
+            android:name=".data.fcm.ShopLocalMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="shoplocal_updates" />
 
         <!-- FileProvider so the camera can write a temp photo we then upload. -->
         <provider

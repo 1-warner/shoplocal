@@ -162,6 +162,10 @@ class CartFragment : Fragment() {
             val result = ShopRepository.placeOrder(session, address, delivery)
             if (_binding == null) return@launch
             result.onSuccess { order ->
+                com.noor.shoplocal.data.firestore.FirestoreRepo.log(
+                    session.userId, com.noor.shoplocal.data.firestore.FirestoreRepo.ORDER,
+                    ProductAdapter.rand(order.total)
+                )
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.order_placed)
                     .setMessage(

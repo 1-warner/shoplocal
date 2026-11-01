@@ -27,6 +27,7 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.linkRegister.setOnClickListener { (activity as AuthActivity).showRegister() }
         binding.btnLogin.setOnClickListener { attemptLogin() }
+        binding.btnGoogle.setOnClickListener { (activity as AuthActivity).startGoogleSignIn() }
     }
 
     private fun attemptLogin() {
@@ -49,8 +50,10 @@ class LoginFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             val result = SupabaseAuth.signIn(requireContext(), email, password)
             setLoading(false)
-            result.onSuccess {
+            result.onSuccess { session ->
                 Log.i("LoginFragment", "Login OK for $email")
+                com.noor.shoplocal.data.firestore.FirestoreRepo
+                    .log(session.userId, com.noor.shoplocal.data.firestore.FirestoreRepo.LOGIN, "Signed in with email")
                 (activity as AuthActivity).onAuthenticated()
             }.onFailure {
                 binding.inputPasswordLayout.error = it.message ?: getString(com.noor.shoplocal.R.string.error_generic)

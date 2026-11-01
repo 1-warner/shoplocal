@@ -1,8 +1,19 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.parcelize")
     id("com.google.devtools.ksp")
+    id("com.google.gms.google-services")
+}
+
+// Release signing is read from keystore.properties (git-ignored) when present, so
+// `./gradlew assembleRelease` produces a signed APK for the Play Store. CI and
+// debug builds work without it.
+val keystorePropsFile = rootProject.file("keystore.properties")
+val keystoreProps = Properties().apply {
+    if (keystorePropsFile.exists()) keystorePropsFile.inputStream().use { load(it) }
 }
 
 android {
@@ -21,9 +32,23 @@ android {
         resourceConfigurations += listOf("en", "zu", "af")
     }
 
+    signingConfigs {
+        if (keystorePropsFile.exists()) {
+            create("release") {
+                storeFile = file(keystoreProps["storeFile"] as String)
+                storePassword = keystoreProps["storePassword"] as String
+                keyAlias = keystoreProps["keyAlias"] as String
+                keyPassword = keystoreProps["keyPassword"] as String
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+            if (keystorePropsFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -73,10 +98,22 @@ dependencies {
     // osmdroid — OpenStreetMap map view for the "artisan map" (no API key needed)
     implementation("org.osmdroid:osmdroid-android:6.1.18")
 
-    // Room — local SQLite database for offline mode + queued actions to sync
+    // Room — local SQLite database for offline mode + queued actions to sync.
+    // The compiler is scoped to the app variants (not the pure-JVM unit-test
+    // variant, which has no Room code) to keep KSP fast and avoid a Windows
+    // file-lock on the unit-test KSP cache.
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
+    add("kspDebug", "androidx.room:room-compiler:2.6.1")
+    add("kspRelease", "androidx.room:room-compiler:2.6.1")
+
+    // Firebase — Cloud Messaging (real-time push) + Firestore (NoSQL store/read)
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+
+    // Custom Tabs — used for the Google SSO sign-in flow
+    implementation("androidx.browser:browser:1.7.0")
 
     // ---- Testing ----
     testImplementation("junit:junit:4.13.2")

@@ -180,6 +180,51 @@ object SupabaseAuth {
         }
     }
 
+    // ---- Single sign-on (Google via Supabase OAuth) --------------------------
+
+    /** The deep link Supabase redirects back to after Google sign-in. */
+    const val OAUTH_REDIRECT = "shoplocal://auth-callback"
+
+    /** URL that starts the Google OAuth flow in a browser / Custom Tab. */
+    fun googleOAuthUrl(): String {
+        val redirect = java.net.URLEncoder.encode(OAUTH_REDIRECT, "UTF-8")
+        return "${Supabase.AUTH}/authorize?provider=google&redirect_to=$redirect"
+    }
+
+    /**
+     * Completes SSO: the OAuth redirect hands back an access + refresh token in the
+     * deep-link fragment. We fetch the user record, then cache the session exactly
+     * like an email/password login.
+     */
+    suspend fun saveExternalSession(context: Context, accessToken: String, refreshToken: String): Result<Session> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val request = Request.Builder()
+                    .url("${Supabase.AUTH}/user")
+                    .addHeader("apikey", Supabase.ANON_KEY)
+                    .addHeader("Authorization", "Bearer $accessToken")
+                    .get()
+                    .build()
+                client.newCall(request).execute().use { resp ->
+                    val text = resp.body?.string().orEmpty()
+                    if (!resp.isSuccessful) error(readError(text, resp.code))
+                    val user = JSONObject(text)
+                    val meta = user.optJSONObject("user_metadata")
+                    val name = meta?.optString("full_name")?.ifBlank { null }
+                        ?: meta?.optString("name").orEmpty()
+                    val session = Session(
+                        accessToken, user.getString("id"),
+                        user.optString("email", ""), name
+                    )
+                    saveSession(context, session)
+                    context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+                        .putString(KEY_REFRESH, refreshToken).apply()
+                    Log.i(TAG, "SSO session cached for ${session.email}")
+                    session
+                }
+            }.onFailure { Log.w(TAG, "saveExternalSession failed: ${it.message}") }
+        }
+
     private fun readError(text: String, code: Int): String =
         try {
             val o = JSONObject(text)

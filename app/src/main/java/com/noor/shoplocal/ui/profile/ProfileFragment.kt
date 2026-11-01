@@ -42,6 +42,10 @@ class ProfileFragment : Fragment() {
         binding.rowOrders.setOnClickListener {
             startActivity(Intent(requireContext(), OrdersActivity::class.java))
         }
+        binding.rowActivity.setOnClickListener {
+            startActivity(Intent(requireContext(),
+                com.noor.shoplocal.ui.activity.ActivityFeedActivity::class.java))
+        }
         binding.btnLogout.setOnClickListener { confirmLogout() }
     }
 

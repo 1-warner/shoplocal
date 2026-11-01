@@ -2,14 +2,46 @@
 
 > **Discover. Support. Shop South African.**
 >
-> A native Android shopping-app prototype that connects South African shoppers
-> with **local artisans and small businesses**. Built for OPSC Part 2 (App
-> Prototype Development) from the design in the Part 1 Planning & Design document.
+> A native Android shopping app that connects South African shoppers with **local
+> artisans and small businesses**. Built across the OPSC POE (Part 1 research &
+> design → Part 2 prototype → **Part 3 final app**).
 
 ![Platform](https://img.shields.io/badge/platform-Android-3DDC84)
 ![Language](https://img.shields.io/badge/language-Kotlin-7F52FF)
 ![Min SDK](https://img.shields.io/badge/minSdk-24-orange)
 ![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF)
+
+---
+
+## 🆕 Release notes — v2.0 (Final PoE)
+
+Updates made to the app **since the Part 2 prototype**, with the **innovative
+features added in this version** highlighted:
+
+- **📷 Camera & gallery photo upload → blob storage** *(new, from lecturer feedback)* —
+  members photograph an item (or pick from the gallery) when listing; the image is
+  uploaded to **Supabase Storage** (blob store) instead of pasting an image URL.
+- **📴 Offline mode with sync** *(new, innovative)* — wishlist/cart actions made
+  offline are saved in a local **Room (SQLite)** queue and replayed automatically
+  when connectivity returns.
+- **🔔 Real-time push notifications** *(new, innovative)* — **Firebase Cloud
+  Messaging** delivers order/promo notifications; the app shows them via a
+  notification channel.
+- **🗂️ NoSQL store + read** *(new, innovative)* — a **Firebase Firestore** "My
+  activity" feed records and reads back user events (logins, views, orders, listings).
+- **🔐 Google single sign-on (SSO)** *(new, innovative)* — "Continue with Google"
+  via Supabase OAuth, alongside email/password.
+- **🎨 Modern redesign** — refreshed Material 3 colour system (light **and** dark),
+  gradient headers, **liquid-glass floating bottom nav**, deals hero banner, rounded
+  cards with quick-add wishlist hearts and SALE badges, whole-page smooth scrolling.
+- **📍 "In your area"** — filter the catalogue by proximity to your saved area, with
+  distance-to-maker on each card.
+- **🐛 Fixes from feedback** — session now auto-refreshes (cart/wishlist no longer
+  fail after token expiry); settings fields no longer show "null"; delivery location
+  required before ordering.
+
+> ⚙️ The push, NoSQL and SSO features need a one-time Firebase / Google setup —
+> see **[SETUP.md](SETUP.md)**. The app builds and runs without it (placeholder config).
 
 ---
 
@@ -226,9 +258,15 @@ A complete, Harvard-style reference list is in **[REFERENCES.md](REFERENCES.md)*
 |---|---|
 | Language | Kotlin |
 | Min / Target SDK | 24 / 34 |
-| Architecture | Activities/Fragments + a single repository layer |
-| Backend | Supabase (Postgres 17, PostgREST, GoTrue auth) |
+| Architecture | Activities/Fragments + repository layer |
+| SQL backend | Supabase (Postgres 17, PostgREST, GoTrue auth) |
+| **Blob storage** | Supabase Storage (item photos) |
+| **NoSQL** | Firebase Firestore (activity feed) |
+| **Push** | Firebase Cloud Messaging |
+| **SSO** | Google via Supabase OAuth |
+| **Offline** | Room (SQLite) queue + sync |
 | Networking | OkHttp + Coroutines |
+| Images / Maps | Coil · osmdroid |
 | CI | GitHub Actions (build + unit tests) |
 
-_Built as the Part 2 prototype for the ShopLocal concept defined in Part 1._
+_Final PoE (Part 3) for the ShopLocal concept defined in Part 1 and prototyped in Part 2._

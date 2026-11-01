@@ -14,6 +14,8 @@ class ShopLocalApp : Application() {
         super.onCreate()
         ShopRepository.attach(this)
         AppTheme.applyFromPrefs(this)
+        // Prepare the notification channel for FCM pushes.
+        com.noor.shoplocal.data.fcm.ShopLocalMessagingService.ensureChannel(this)
         Log.i("ShopLocalApp", "ShopLocal started")
     }
 }

@@ -1,6 +1,10 @@
 package com.noor.shoplocal.ui
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.noor.shoplocal.R
@@ -23,10 +27,15 @@ class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private val requestNotifPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { /* no-op */ }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        maybeAskNotificationPermission()
 
         binding.bottomNav.setOnItemSelectedListener { item ->
             val fragment: Fragment = when (item.itemId) {
@@ -63,6 +72,16 @@ class MainActivity : BaseActivity() {
                 ).show()
             }
             refreshCartBadge()
+        }
+    }
+
+    /** On Android 13+ ask once for permission to show push notifications. */
+    private fun maybeAskNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val granted = ContextCompat.checkSelfPermission(
+                this, android.Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+            if (!granted) requestNotifPermission.launch(android.Manifest.permission.POST_NOTIFICATIONS)
         }
     }
 

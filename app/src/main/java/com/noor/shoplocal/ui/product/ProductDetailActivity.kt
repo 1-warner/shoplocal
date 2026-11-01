@@ -55,6 +55,11 @@ class ProductDetailActivity : BaseActivity() {
 
         // Remember this product for the "recently viewed" strip on Home.
         Prefs.addRecentlyViewed(this, product.id)
+        // Log the view to the NoSQL activity feed.
+        SupabaseAuth.currentSession(this)?.let {
+            com.noor.shoplocal.data.firestore.FirestoreRepo
+                .log(it.userId, com.noor.shoplocal.data.firestore.FirestoreRepo.VIEW, product.name)
+        }
 
         bindProduct()
         setupMap()
