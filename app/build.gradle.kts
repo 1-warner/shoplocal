@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.parcelize")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -71,6 +72,11 @@ dependencies {
 
     // osmdroid — OpenStreetMap map view for the "artisan map" (no API key needed)
     implementation("org.osmdroid:osmdroid-android:6.1.18")
+
+    // Room — local SQLite database for offline mode + queued actions to sync
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
 
     // ---- Testing ----
     testImplementation("junit:junit:4.13.2")

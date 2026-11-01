@@ -48,7 +48,22 @@ class MainActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        refreshCartBadge()
+        syncThenRefresh()
+    }
+
+    /** Replays any actions queued while offline, then updates the cart badge. */
+    private fun syncThenRefresh() {
+        val session = SupabaseAuth.currentSession(this) ?: return
+        lifecycleScope.launch {
+            val synced = com.noor.shoplocal.data.offline.SyncManager.syncPending(this@MainActivity, session)
+            if (synced > 0) {
+                com.google.android.material.snackbar.Snackbar.make(
+                    binding.root, getString(R.string.synced_offline, synced),
+                    com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+                ).show()
+            }
+            refreshCartBadge()
+        }
     }
 
     /** Shows the live item count as a badge on the Cart tab. */

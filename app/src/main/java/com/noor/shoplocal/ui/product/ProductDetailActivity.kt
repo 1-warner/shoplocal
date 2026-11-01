@@ -138,18 +138,18 @@ class ProductDetailActivity : BaseActivity() {
             // Look up any existing quantity so "Add" increments rather than resets.
             val existing = ShopRepository.cart(session).firstOrNull { it.product.id == product.id }
             val newQty = (existing?.quantity ?: 0) + 1
-            ShopRepository.setCartQuantity(session, product.id, newQty)
-                .onSuccess { snack(getString(R.string.added_to_cart)) }
-                .onFailure { snack(it.message ?: getString(R.string.error_generic)) }
+            val synced = com.noor.shoplocal.data.offline.SyncManager
+                .setCart(this@ProductDetailActivity, session, product.id, newQty)
+            snack(getString(if (synced) R.string.added_to_cart else R.string.saved_offline))
         }
     }
 
     private fun addToWishlist() {
         val session = SupabaseAuth.currentSession(this) ?: return
         lifecycleScope.launch {
-            ShopRepository.addToWishlist(session, product.id)
-                .onSuccess { snack(getString(R.string.added_to_wishlist)) }
-                .onFailure { snack(it.message ?: getString(R.string.error_generic)) }
+            val synced = com.noor.shoplocal.data.offline.SyncManager
+                .addToWishlist(this@ProductDetailActivity, session, product.id)
+            snack(getString(if (synced) R.string.added_to_wishlist else R.string.saved_offline))
         }
     }
 

@@ -112,10 +112,12 @@ class HomeFragment : Fragment() {
     private fun quickSaveToWishlist(product: Product) {
         val session = SupabaseAuth.currentSession(requireContext()) ?: return
         viewLifecycleOwner.lifecycleScope.launch {
-            ShopRepository.addToWishlist(session, product.id)
+            val synced = com.noor.shoplocal.data.offline.SyncManager
+                .addToWishlist(requireContext(), session, product.id)
             if (_binding != null) {
+                val msg = if (synced) R.string.added_to_wishlist else R.string.saved_offline
                 com.google.android.material.snackbar.Snackbar.make(
-                    binding.root, getString(R.string.added_to_wishlist),
+                    binding.root, getString(msg),
                     com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
                 ).show()
             }

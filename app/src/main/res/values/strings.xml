@@ -101,6 +101,9 @@
     <string name="add_to_wishlist">Save to wishlist</string>
     <string name="added_to_cart">Added to your cart</string>
     <string name="added_to_wishlist">Saved to your wishlist</string>
+    <string name="saved_offline">Saved offline — will sync when you\'re back online</string>
+    <string name="synced_offline">Synced %1$d offline change(s)</string>
+    <string name="offline_banner">You\'re offline — changes will sync later</string>
     <string name="the_maker">The maker</string>
     <string name="verified">Verified artisan</string>
     <string name="origin_label">Made in %1$s</string>
