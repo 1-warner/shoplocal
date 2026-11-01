@@ -49,7 +49,10 @@ class HomeFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter = ProductAdapter { openProduct(it) }
+        adapter = ProductAdapter(
+            onClick = { openProduct(it) },
+            onWishlist = { quickSaveToWishlist(it) }
+        )
         binding.productGrid.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.productGrid.adapter = adapter
         binding.productGrid.isNestedScrollingEnabled = false
@@ -66,6 +69,10 @@ class HomeFragment : Fragment() {
                 com.noor.shoplocal.ui.map.ArtisanMapActivity::class.java))
         }
 
+        binding.btnShopDeals.setOnClickListener {
+            binding.chipDeals.isChecked = true
+            binding.productGrid.requestFocus()
+        }
         binding.btnSort.setOnClickListener { showSortMenu() }
         binding.chipDeals.setOnCheckedChangeListener { _, checked ->
             dealsOnly = checked
@@ -99,6 +106,20 @@ class HomeFragment : Fragment() {
 
     private fun openProduct(product: Product) {
         startActivity(ProductDetailActivity.intent(requireContext(), product))
+    }
+
+    /** Quick "save to wishlist" from the heart button on a product card. */
+    private fun quickSaveToWishlist(product: Product) {
+        val session = SupabaseAuth.currentSession(requireContext()) ?: return
+        viewLifecycleOwner.lifecycleScope.launch {
+            ShopRepository.addToWishlist(session, product.id)
+            if (_binding != null) {
+                com.google.android.material.snackbar.Snackbar.make(
+                    binding.root, getString(R.string.added_to_wishlist),
+                    com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
     private fun load() {

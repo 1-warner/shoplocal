@@ -1,54 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme (light). DayNight lets Settings switch to dark. -->
+    <!-- Base application theme. DayNight + semantic colour tokens that swap in values-night. -->
     <style name="Theme.ShopLocal" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Colour roles -->
+        <!-- Primary / accent -->
         <item name="colorPrimary">@color/brand_green</item>
         <item name="colorPrimaryDark">@color/brand_green_dark</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorPrimaryContainer">@color/brand_green_light</item>
         <item name="colorOnPrimaryContainer">@color/brand_green_dark</item>
-        <item name="colorSecondary">@color/brand_orange</item>
-        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondary">@color/brand_gold</item>
+        <item name="colorOnSecondary">@color/black</item>
         <item name="colorSecondaryContainer">@color/brand_gold_light</item>
         <item name="colorOnSecondaryContainer">#5A4200</item>
-        <item name="colorTertiary">@color/brand_gold</item>
+        <item name="colorTertiary">@color/brand_teal</item>
+
+        <!-- Surfaces -->
+        <item name="android:colorBackground">@color/app_background</item>
+        <item name="colorSurface">@color/app_surface</item>
+        <item name="colorOnSurface">@color/app_on_surface</item>
+        <item name="colorSurfaceVariant">@color/app_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/app_on_surface_variant</item>
+        <item name="colorSurfaceContainer">@color/app_surface_container</item>
+        <item name="colorSurfaceContainerLow">@color/app_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/app_surface_variant</item>
+        <item name="colorOutline">@color/app_outline</item>
+        <item name="colorOutlineVariant">@color/app_outline</item>
+        <item name="colorError">@color/sale_red</item>
 
         <!-- Rounded, modern component shapes -->
         <item name="shapeAppearanceCornerSmall">@style/ShapeAppearance.ShopLocal.Small</item>
         <item name="shapeAppearanceCornerMedium">@style/ShapeAppearance.ShopLocal.Medium</item>
         <item name="shapeAppearanceCornerLarge">@style/ShapeAppearance.ShopLocal.Large</item>
-
-        <!-- Pill-shaped buttons for a modern feel -->
         <item name="materialButtonStyle">@style/Widget.ShopLocal.Button</item>
 
         <!-- System bars -->
-        <item name="android:statusBarColor">@color/brand_green</item>
-        <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <item name="android:statusBarColor">@color/brand_green_dark</item>
+        <item name="android:navigationBarColor">@color/app_background</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <!-- Splash screen theme with the brand-green background. -->
     <style name="Theme.ShopLocal.Splash">
-        <item name="android:windowBackground">@color/brand_green</item>
-        <item name="android:statusBarColor">@color/brand_green</item>
+        <item name="android:windowBackground">@color/brand_green_dark</item>
+        <item name="android:statusBarColor">@color/brand_green_dark</item>
     </style>
 
-    <!-- Shapes -->
+    <!-- ===== Shapes ===== -->
     <style name="ShapeAppearance.ShopLocal.Small" parent="ShapeAppearance.Material3.Corner.Small">
-        <item name="cornerSize">10dp</item>
+        <item name="cornerSize">12dp</item>
     </style>
     <style name="ShapeAppearance.ShopLocal.Medium" parent="ShapeAppearance.Material3.Corner.Medium">
-        <item name="cornerSize">18dp</item>
+        <item name="cornerSize">20dp</item>
     </style>
     <style name="ShapeAppearance.ShopLocal.Large" parent="ShapeAppearance.Material3.Corner.Large">
-        <item name="cornerSize">24dp</item>
+        <item name="cornerSize">28dp</item>
     </style>
 
-    <!-- Rounded, comfortably padded button -->
+    <!-- Rounded, comfortably padded pill button -->
     <style name="Widget.ShopLocal.Button" parent="Widget.Material3.Button">
         <item name="cornerRadius">26dp</item>
-        <item name="android:paddingTop">12dp</item>
-        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingTop">13dp</item>
+        <item name="android:paddingBottom">13dp</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <!-- Section header text used across the home rails -->
+    <style name="Text.Section" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 </resources>

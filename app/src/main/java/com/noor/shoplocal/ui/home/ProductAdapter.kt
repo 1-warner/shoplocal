@@ -18,7 +18,8 @@ import java.util.Locale
  * A tap opens the product detail screen.
  */
 class ProductAdapter(
-    private val onClick: (Product) -> Unit
+    private val onClick: (Product) -> Unit,
+    private val onWishlist: ((Product) -> Unit)? = null
 ) : ListAdapter<Product, ProductAdapter.VH>(DIFF) {
 
     // Optional user location — when set, product cards show distance to the maker.
@@ -78,6 +79,13 @@ class ProductAdapter(
             crossfade(true)
             placeholder(R.drawable.ic_image_placeholder)
             error(R.drawable.ic_image_placeholder)
+        }
+
+        if (onWishlist != null) {
+            b.btnWishlist.visibility = android.view.View.VISIBLE
+            b.btnWishlist.setOnClickListener { onWishlist.invoke(p) }
+        } else {
+            b.btnWishlist.visibility = android.view.View.GONE
         }
 
         b.root.setOnClickListener { onClick(p) }

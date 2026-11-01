@@ -32,9 +32,9 @@ class WishlistFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.title.text = getString(com.noor.shoplocal.R.string.tab_wishlist)
-        adapter = ProductAdapter { product ->
+        adapter = ProductAdapter(onClick = { product ->
             startActivity(ProductDetailActivity.intent(requireContext(), product))
-        }
+        })
         binding.list.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.list.adapter = adapter
         binding.swipeRefresh.setOnRefreshListener { load() }

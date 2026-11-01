@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark-mode overrides of the semantic + neutral tokens. Brand hues stay. -->
+    <color name="brand_green">#36C6A2</color>          <!-- lifted so it reads on dark -->
+    <color name="brand_green_light">#13302A</color>
+    <color name="grey_100">#1C2621</color>
+    <color name="grey_300">#2C382F</color>
+    <color name="grey_600">#9AA8A0</color>
+
+    <color name="app_background">#0E1512</color>
+    <color name="app_surface">#161F1B</color>
+    <color name="app_surface_variant">#1E2A24</color>
+    <color name="app_surface_container">#1A241F</color>
+    <color name="app_on_surface">#E7EEE9</color>
+    <color name="app_on_surface_variant">#B4C2B9</color>
+    <color name="app_outline">#33423A</color>
+
+    <color name="glass_surface">#B31C2621</color>       <!-- frosted dark panel -->
+    <color name="glass_stroke">#26FFFFFF</color>
+</resources>

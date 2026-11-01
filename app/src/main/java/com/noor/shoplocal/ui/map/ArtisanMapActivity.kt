@@ -82,10 +82,10 @@ class ArtisanMapActivity : BaseActivity() {
         sheetBinding.sheetVerified.visibility = if (seller.verified) View.VISIBLE else View.GONE
 
         val dialog = BottomSheetDialog(this)
-        val adapter = ProductAdapter { product ->
+        val adapter = ProductAdapter(onClick = { product ->
             startActivity(ProductDetailActivity.intent(this, product))
             dialog.dismiss()
-        }
+        })
         sheetBinding.sheetProducts.layoutManager = GridLayoutManager(this, 2)
         sheetBinding.sheetProducts.adapter = adapter
 

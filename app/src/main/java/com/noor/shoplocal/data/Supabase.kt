@@ -20,4 +20,9 @@ object Supabase {
 
     const val REST = "$URL/rest/v1"
     const val AUTH = "$URL/auth/v1"
+    const val STORAGE = "$URL/storage/v1"
+    const val IMAGE_BUCKET = "item-images"
+
+    /** Public URL for an object already uploaded to the public image bucket. */
+    fun publicImageUrl(path: String): String = "$STORAGE/object/public/$IMAGE_BUCKET/$path"
 }

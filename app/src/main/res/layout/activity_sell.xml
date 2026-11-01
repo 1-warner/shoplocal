@@ -97,18 +97,62 @@
                     android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
+            <!-- Item photo: captured with the camera or picked from the gallery,
+                 then uploaded to blob storage. -->
+            <TextView style="@style/SettingsSection" android:text="@string/sell_photo" />
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:helperText="@string/sell_image_helper"
-                android:hint="@string/sell_image">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/inputImage"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/app_outline"
+                app:strokeWidth="1dp">
+
+                <ImageView
+                    android:id="@+id/imagePreview"
                     android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:background="@color/grey_100"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="@string/sell_photo"
+                    android:src="@drawable/ic_image_placeholder" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCamera"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:inputType="textUri" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    app:icon="@android:drawable/ic_menu_camera"
+                    android:text="@string/take_photo" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnGallery"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    app:icon="@android:drawable/ic_menu_gallery"
+                    android:text="@string/choose_gallery" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/uploadProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="6dp"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/errorText"

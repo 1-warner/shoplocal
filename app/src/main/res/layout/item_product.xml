@@ -5,9 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
-    app:cardCornerRadius="18dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="22dp"
     app:cardElevation="1dp"
-    app:strokeColor="@color/grey_100"
+    app:rippleColor="@color/brand_green_light"
+    app:strokeColor="@color/app_outline"
     app:strokeWidth="1dp">
 
     <LinearLayout
@@ -41,6 +44,18 @@
                 android:textSize="10sp"
                 android:textStyle="bold"
                 android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/btnWishlist"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_gravity="top|end"
+                android:layout_margin="8dp"
+                android:background="@drawable/bg_circle_glass"
+                android:padding="7dp"
+                android:src="@drawable/ic_heart"
+                app:tint="@color/sale_red"
+                android:contentDescription="@string/add_to_wishlist" />
         </FrameLayout>
 
         <LinearLayout

@@ -1,17 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Brand palette from the Part 1 design (SA flag inspired) -->
-    <color name="brand_green">#006B54</color>
+    <!-- ============ Brand (kept to match the logo) ============ -->
+    <color name="brand_green">#00705A</color>
     <color name="brand_green_dark">#004C3C</color>
-    <color name="brand_green_light">#CDE9E0</color>
-    <color name="brand_gold">#FFB612</color>
-    <color name="brand_gold_light">#FFE9B0</color>
-    <color name="brand_orange">#E87A1A</color>
+    <color name="brand_green_light">#CFEDE4</color>
+    <color name="brand_teal">#12A58A</color>        <!-- modern mint accent for gradients -->
+    <color name="brand_gold">#F5A524</color>
+    <color name="brand_gold_light">#FFE7B3</color>
+    <color name="brand_orange">#F0792B</color>
+    <color name="brand_coral">#FF5A5F</color>        <!-- lively CTA / sale accent -->
 
+    <!-- ============ Neutrals ============ -->
     <color name="white">#FFFFFF</color>
-    <color name="black">#1A1A1A</color>
-    <color name="grey_100">#F4F5F3</color>
-    <color name="grey_300">#DADED8</color>
-    <color name="grey_600">#6B7280</color>
-    <color name="sale_red">#C0392B</color>
+    <color name="black">#141A17</color>
+    <color name="grey_100">#F1F4F0</color>
+    <color name="grey_300">#DCE3DD</color>
+    <color name="grey_600">#67766D</color>
+    <color name="sale_red">#E23D49</color>
+
+    <!-- ============ Semantic surfaces (light; overridden in values-night) ====== -->
+    <color name="app_background">#F6F8F5</color>
+    <color name="app_surface">#FFFFFF</color>
+    <color name="app_surface_variant">#EDF1EC</color>
+    <color name="app_surface_container">#F2F5F0</color>
+    <color name="app_on_surface">#141A17</color>
+    <color name="app_on_surface_variant">#4C5A51</color>
+    <color name="app_outline">#D6DED7</color>
+
+    <!-- ============ Liquid-glass translucency ============ -->
+    <color name="glass_surface">#E6FFFFFF</color>      <!-- frosted light panel -->
+    <color name="glass_stroke">#33FFFFFF</color>
+    <color name="scrim">#66000000</color>
 </resources>

@@ -48,8 +48,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
-                    android:padding="8dp"
-                    android:paddingBottom="88dp" />
+                    android:paddingHorizontal="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="108dp" />
 
                 <TextView
                     android:id="@+id/emptyState"
@@ -70,7 +71,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="92dp"
         android:text="@string/sell_item"
         app:icon="@android:drawable/ic_input_add" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -11,6 +11,9 @@
     <string name="tab_profile">Profile</string>
 
     <!-- Home controls -->
+    <string name="hero_title">Deals of the day</string>
+    <string name="hero_subtitle">Up to 30% off handpicked local finds</string>
+    <string name="hero_cta">Shop deals</string>
     <string name="sort">Sort</string>
     <string name="sort_newest">Newest</string>
     <string name="sort_price_low">Price: low to high</string>
@@ -38,6 +41,12 @@
     <string name="sell_location">Where is it?</string>
     <string name="sell_image">Image URL (optional)</string>
     <string name="sell_image_helper">Paste a link to a photo of your item.</string>
+    <string name="sell_photo">Item photo</string>
+    <string name="take_photo">Take photo</string>
+    <string name="choose_gallery">Gallery</string>
+    <string name="uploading_photo">Uploading photo…</string>
+    <string name="photo_upload_failed">Could not upload photo. Please try again.</string>
+    <string name="listing_posted_photo">Photo uploaded ✓</string>
     <string name="post_listing">Post listing</string>
     <string name="listing_posted">Your item is now listed!</string>
     <string name="sell_error_title">Please give your item a title (3+ characters).</string>

@@ -9,4 +9,12 @@
         <item name="android:textColor">@color/brand_green</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <!-- Pill active indicator for the bottom nav -->
+    <style name="ShopLocal.NavIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/brand_green_light</item>
+        <item name="android:width">60dp</item>
+        <item name="android:height">34dp</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.ShopLocal.Large</item>
+    </style>
 </resources>

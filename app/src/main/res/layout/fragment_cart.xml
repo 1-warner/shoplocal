@@ -86,7 +86,9 @@
         android:id="@+id/checkoutPanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurfaceContainer"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginBottom="92dp"
+        android:background="@drawable/bg_glass"
         android:elevation="8dp"
         android:orientation="vertical"
         android:padding="16dp">

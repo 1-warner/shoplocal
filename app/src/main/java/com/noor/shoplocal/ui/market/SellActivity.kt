@@ -1,22 +1,33 @@
 package com.noor.shoplocal.ui.market
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.noor.shoplocal.R
 import com.noor.shoplocal.data.SaCities
 import com.noor.shoplocal.data.ShopRepository
+import com.noor.shoplocal.data.StorageRepository
 import com.noor.shoplocal.data.SupabaseAuth
 import com.noor.shoplocal.databinding.ActivitySellBinding
 import com.noor.shoplocal.ui.BaseActivity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import java.io.File
 
 /**
- * "Sell an item" form — the create side of the member marketplace. Validates the
- * input, resolves the chosen city to coordinates (so the listing shows on a map),
- * and posts it to the REST API.
+ * "Sell an item" form — the create side of the member marketplace. The member
+ * photographs the item (camera) or picks one from the gallery; the image is
+ * uploaded to blob storage and its URL saved with the listing. Input is validated
+ * before any network call so the form never crashes on bad data.
  */
 class SellActivity : BaseActivity() {
 
@@ -26,6 +37,19 @@ class SellActivity : BaseActivity() {
         "General", "Jewellery", "Bags", "Homeware", "Decor",
         "Clothing", "Beauty", "Art", "Food", "Electronics", "Other"
     )
+
+    private var uploadedImageUrl: String? = null
+    private var cameraTempUri: Uri? = null
+
+    // Gallery picker → returns a content Uri.
+    private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let { handlePickedImage(readBitmap(it)) }
+    }
+
+    // Camera capture → writes a full-size photo to our temp Uri.
+    private val takePhoto = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        if (success) cameraTempUri?.let { handlePickedImage(readBitmap(it)) }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +68,63 @@ class SellActivity : BaseActivity() {
         )
         binding.inputCity.setText(SaCities.NAMES.first(), false)
 
+        binding.btnCamera.setOnClickListener { launchCamera() }
+        binding.btnGallery.setOnClickListener { pickImage.launch("image/*") }
         binding.btnPost.setOnClickListener { post() }
     }
+
+    // ---- Image capture + upload ---------------------------------------------
+
+    private fun launchCamera() {
+        val dir = File(cacheDir, "images").apply { mkdirs() }
+        val file = File(dir, "capture_${System.currentTimeMillis()}.jpg")
+        val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
+        cameraTempUri = uri
+        takePhoto.launch(uri)
+    }
+
+    private fun readBitmap(uri: Uri): Bitmap? = try {
+        contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it) }
+    } catch (e: Exception) {
+        null
+    }
+
+    /** Scales + compresses the chosen image, previews it, and uploads to storage. */
+    private fun handlePickedImage(bitmap: Bitmap?) {
+        if (bitmap == null) {
+            Snackbar.make(binding.root, R.string.photo_upload_failed, Snackbar.LENGTH_SHORT).show()
+            return
+        }
+        binding.imagePreview.setImageBitmap(bitmap)
+        val session = SupabaseAuth.currentSession(this) ?: return
+
+        binding.uploadProgress.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            val bytes = withContext(Dispatchers.Default) { compress(bitmap) }
+            val result = StorageRepository.uploadJpeg(session, bytes)
+            binding.uploadProgress.visibility = View.GONE
+            result.onSuccess {
+                uploadedImageUrl = it
+                Snackbar.make(binding.root, R.string.listing_posted_photo, Snackbar.LENGTH_SHORT).show()
+            }.onFailure {
+                Snackbar.make(binding.root, R.string.photo_upload_failed, Snackbar.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    /** Downscale to max 1024px on the long edge and JPEG-compress to keep uploads small. */
+    private fun compress(src: Bitmap): ByteArray {
+        val max = 1024
+        val scale = minOf(1f, max.toFloat() / maxOf(src.width, src.height))
+        val bmp = if (scale < 1f)
+            Bitmap.createScaledBitmap(src, (src.width * scale).toInt(), (src.height * scale).toInt(), true)
+        else src
+        val out = ByteArrayOutputStream()
+        bmp.compress(Bitmap.CompressFormat.JPEG, 85, out)
+        return out.toByteArray()
+    }
+
+    // ---- Post the listing ----------------------------------------------------
 
     private fun post() {
         val session = SupabaseAuth.currentSession(this) ?: run { finish(); return }
@@ -54,9 +133,7 @@ class SellActivity : BaseActivity() {
         val category = binding.inputCategory.text?.toString()?.ifBlank { "General" } ?: "General"
         val priceText = binding.inputPrice.text?.toString()?.trim().orEmpty()
         val cityName = binding.inputCity.text?.toString().orEmpty()
-        val imageUrl = binding.inputImage.text?.toString()?.trim()?.ifBlank { null }
 
-        // Validate before hitting the network so the user never sees a crash.
         val price = priceText.toDoubleOrNull()
         val error = when {
             title.length < 3 -> getString(R.string.sell_error_title)
@@ -80,7 +157,7 @@ class SellActivity : BaseActivity() {
                 description = description,
                 category = category,
                 price = price!!,
-                imageUrl = imageUrl,
+                imageUrl = uploadedImageUrl,   // the photo uploaded to blob storage
                 location = city.name,
                 lat = city.lat,
                 lng = city.lng
