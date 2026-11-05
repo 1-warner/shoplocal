@@ -180,16 +180,18 @@ object SupabaseAuth {
         }
     }
 
-    // ---- Single sign-on (Google via Supabase OAuth) --------------------------
+    // ---- Single sign-on (Google / Facebook via Supabase OAuth) ---------------
 
-    /** The deep link Supabase redirects back to after Google sign-in. */
+    /** The deep link Supabase redirects back to after an SSO sign-in. */
     const val OAUTH_REDIRECT = "shoplocal://auth-callback"
 
-    /** URL that starts the Google OAuth flow in a browser / Custom Tab. */
-    fun googleOAuthUrl(): String {
+    /** URL that starts an OAuth flow for the given provider ("google" | "facebook"). */
+    fun oauthUrl(provider: String): String {
         val redirect = java.net.URLEncoder.encode(OAUTH_REDIRECT, "UTF-8")
-        return "${Supabase.AUTH}/authorize?provider=google&redirect_to=$redirect"
+        return "${Supabase.AUTH}/authorize?provider=$provider&redirect_to=$redirect"
     }
+
+    fun googleOAuthUrl(): String = oauthUrl("google")
 
     /**
      * Completes SSO: the OAuth redirect hands back an access + refresh token in the

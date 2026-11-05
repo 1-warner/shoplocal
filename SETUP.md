@@ -30,22 +30,44 @@ so CI stays green; you replace it with your real one below.
 That's it — the **My activity** screen (Profile → My activity) now reads/writes
 Firestore, and pushes arrive as notifications.
 
-## 2. Google SSO (optional but part of the PoE)
+## 2. SSO — Google & Facebook (part of the PoE)
 
-Supabase handles the OAuth; you just supply Google credentials.
+The app already has **Continue with Google** and **Continue with Facebook** buttons
+and the `shoplocal://auth-callback` deep link. Supabase handles the OAuth — you just
+create the provider apps and plug the credentials in.
 
-1. In **Google Cloud Console** → *APIs & Services → Credentials* → **Create OAuth
-   client ID → Web application**. Add this authorised redirect URI:
-   `https://swchtpvdtncslvlsxeul.supabase.co/auth/v1/callback`
-2. Copy the **Client ID** and **Client secret**.
-3. In the **Supabase dashboard** → *Authentication → Providers → Google*: enable it
-   and paste the Client ID + secret. Save.
-4. In *Authentication → URL Configuration → Redirect URLs*, add
-   **`shoplocal://auth-callback`**.
+### 2a. Create the OAuth apps (console only — can't be scripted)
 
-Now **Continue with Google** on the login screen opens Google, and the app captures
-the redirect and signs you in. (The app already declares the `shoplocal://auth-callback`
-deep link.)
+**Google** — *Google Cloud Console → APIs & Services → Credentials → Create OAuth
+client ID → Web application*. Authorised redirect URI:
+`https://swchtpvdtncslvlsxeul.supabase.co/auth/v1/callback`. Copy the **Client ID**
+and **Client secret**.
+
+**Facebook** — *developers.facebook.com → Create App → Consumer → add "Facebook
+Login" → Settings*. Valid OAuth Redirect URI:
+`https://swchtpvdtncslvlsxeul.supabase.co/auth/v1/callback`. From *Settings → Basic*
+copy the **App ID** and **App secret**.
+
+### 2b. Configure Supabase — the CLI does this for you
+
+Instead of clicking through the Supabase dashboard, run the bundled script:
+
+```bash
+cp scripts/sso.env.example scripts/sso.env   # then fill in the 5 values
+./scripts/setup-sso.sh
+```
+
+`sso.env` needs a **Supabase personal access token**
+(<https://supabase.com/dashboard/account/tokens>) plus the Google/Facebook client
+IDs + secrets from step 2a. The script enables both providers and sets the
+`shoplocal://auth-callback` redirect allow-list via the Supabase Management API.
+
+> Prefer the dashboard? *Authentication → Providers → Google / Facebook* (enable +
+> paste credentials) and *Authentication → URL Configuration → Redirect URLs* (add
+> `shoplocal://auth-callback`) does the same thing.
+
+Now the Google/Facebook buttons open the provider, and the app captures the redirect
+and signs you in.
 
 ---
 

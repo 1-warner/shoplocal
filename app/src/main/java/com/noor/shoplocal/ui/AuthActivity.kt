@@ -67,7 +67,7 @@ class AuthActivity : BaseActivity() {
         lifecycleScope.launch {
             SupabaseAuth.saveExternalSession(this@AuthActivity, accessToken, refreshToken)
                 .onSuccess { session ->
-                    FirestoreRepo.log(session.userId, FirestoreRepo.LOGIN, "Signed in with Google")
+                    FirestoreRepo.log(session.userId, FirestoreRepo.LOGIN, "Signed in with SSO")
                     onAuthenticated()
                 }
                 .onFailure { Toast.makeText(this@AuthActivity, R.string.sso_failed, Toast.LENGTH_SHORT).show() }
@@ -89,12 +89,15 @@ class AuthActivity : BaseActivity() {
         finish()
     }
 
-    /** Opens the Google sign-in flow in a browser tab. Called by the fragments. */
-    fun startGoogleSignIn() {
+    /** Opens an SSO provider's sign-in flow in a browser tab. Called by the fragments. */
+    fun startOAuth(provider: String) {
         try {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(SupabaseAuth.googleOAuthUrl())))
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(SupabaseAuth.oauthUrl(provider))))
         } catch (e: Exception) {
             Toast.makeText(this, R.string.sso_failed, Toast.LENGTH_SHORT).show()
         }
     }
+
+    fun startGoogleSignIn() = startOAuth("google")
+    fun startFacebookSignIn() = startOAuth("facebook")
 }

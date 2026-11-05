@@ -28,6 +28,7 @@ class LoginFragment : Fragment() {
         binding.linkRegister.setOnClickListener { (activity as AuthActivity).showRegister() }
         binding.btnLogin.setOnClickListener { attemptLogin() }
         binding.btnGoogle.setOnClickListener { (activity as AuthActivity).startGoogleSignIn() }
+        binding.btnFacebook.setOnClickListener { (activity as AuthActivity).startFacebookSignIn() }
     }
 
     private fun attemptLogin() {

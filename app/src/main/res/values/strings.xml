@@ -181,6 +181,7 @@
     <!-- SSO -->
     <string name="or">or</string>
     <string name="continue_google">Continue with Google</string>
+    <string name="continue_facebook">Continue with Facebook</string>
     <string name="sso_cancelled">Google sign-in was cancelled.</string>
     <string name="sso_failed">Google sign-in failed. Please try again.</string>
 
