@@ -30,16 +30,23 @@ auth endpoints — no third-party SDK. See `Sources/ShopLocal/`:
 Xcode.
 
 ```bash
-# one-time: install Swift 6+, then xtool, then the Darwin SDK
-xtool sdk install          # downloads the Apple Darwin Swift SDK
+# one-time: install Swift 6+, then xtool (see xtool docs), then the Darwin SDK.
+# IMPORTANT: xtool builds the iOS SDK from Apple's Xcode — there is no prebuilt
+# SDK to download. Get Xcode.xip from https://developer.apple.com/download/all
+# (Apple ID required, ~10 GB), then:
+xtool sdk install /path/to/Xcode.xip
 
-xtool build                # compiles the app for iOS → .ipa
-xtool install              # signs (with your Apple ID) + installs to a connected iPhone
+# from this ios/ folder:
+xtool dev build            # compiles the app for iOS → .ipa
+xtool install <app>.ipa    # signs (with your Apple ID) + installs to a connected iPhone
 ```
 
-Installing to a physical iPhone needs your **Apple ID** (free provisioning gives a
-7-day signing) and the device reachable over USB. On Windows this goes through WSL
-USB passthrough, which is finicky; a Mac or Linux host is more reliable.
+Notes:
+- **You don't need a Mac**, but you *do* need Apple's **Xcode.xip** once (to extract
+  the iOS SDK) — that's the big requirement.
+- Installing to a physical iPhone needs your **Apple ID** (free provisioning = 7-day
+  signing) and the device reachable over USB. On Windows this goes through WSL USB
+  passthrough (`usbipd-win`), which is finicky; a Linux or macOS host is more reliable.
 
 ### Option B — Xcode (Mac)
 
